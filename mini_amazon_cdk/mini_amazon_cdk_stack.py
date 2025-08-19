@@ -50,3 +50,5 @@ class MiniAmazonCdkStack(Stack):
         # 3. This will print the website URL in the terminal after deployment
         CfnOutput(self, "WebsiteURL", value=f"https://{distribution.domain_name}")
         CfnOutput(self, "BucketName", value=website_bucket.bucket_name)
+
+        # ()_()
