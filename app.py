@@ -8,6 +8,6 @@ app = cdk.App()
 MiniAmazonCdkStack(app, "MiniAmazonCdkStack",
     env=cdk.Environment(
         account='480421269735',  # ← YOUR 12-DIGIT ACCOUNT ID HERE
-        region='us-east-1'    # UAE region for Islamabad
+        region='ap-south-1'    # UAE region for Islamabad
     )
 )
