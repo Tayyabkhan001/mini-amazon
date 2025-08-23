@@ -1,11 +1,13 @@
 // src/app/order-confirmation/page.js
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle, ShoppingBag, Home } from 'lucide-react';
 
-export default function OrderConfirmationPage() {
+// Wrap the content that uses useSearchParams in a separate component
+function OrderConfirmationContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('orderId');
 
@@ -20,7 +22,7 @@ export default function OrderConfirmationPage() {
           <ShoppingBag size={32} className="mx-auto text-green-500 mb-3" />
           <p className="text-lg font-semibold mb-2">Thank you for your order!</p>
           <p className="text-gray-600 mb-2">Your order has been successfully placed.</p>
-          <p className="text-sm text-gray-500">Order ID: {orderId}</p>
+          <p className="text-sm text-gray-500">Order ID: {orderId || 'N/A'}</p>
         </div>
 
         <div className="space-y-3">
@@ -47,5 +49,20 @@ export default function OrderConfirmationPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function OrderConfirmationPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading order details...</p>
+        </div>
+      </div>
+    }>
+      <OrderConfirmationContent />
+    </Suspense>
   );
 }
