@@ -7,7 +7,9 @@ app = cdk.App()
 # REPLACE '123456789012' with your actual AWS Account ID
 MiniAmazonCdkStack(app, "MiniAmazonCdkStack",
     env=cdk.Environment(
-        account='480421269735',  # ← YOUR 12-DIGIT ACCOUNT ID HERE
+        account='480421269735',  # ΓåÉ YOUR 12-DIGIT ACCOUNT ID HERE
         region='ap-south-1'    # UAE region for Islamabad
     )
 )
+
+app.synth()  # <-- ADD THIS LINE
