@@ -1,26 +1,36 @@
 // src/components/ProductGrid.js
 'use client';
 
+
 import { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
 import { productsAPI } from '@/lib/api';
-import { RefreshCw } from 'lucide-react';
+
+
+
+
 
 export default function ProductGrid() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+
   const fetchProducts = async () => {
     try {
       setLoading(true);
       setError(null);
+
+      // Use your AWS backend API
       const response = await productsAPI.getAll();
 
-      console.log('API Response:', response.data);
+      // Handle the actual AWS response format
+      console.log('API Response:', response.data); // Check the actual structure
 
       let productsData = [];
+
       if (response.data) {
+        // Your API returns { products: [], count: number, category: string }
         productsData = response.data.products || [];
       }
 
@@ -60,31 +70,10 @@ export default function ProductGrid() {
   }
 
   return (
-    <div className="p-4">
-      {/* Add Refresh Button */}
-      <div className="flex justify-end mb-6">
-        <button
-          onClick={fetchProducts}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-blue-600 transition-colors"
-        >
-          <RefreshCw size={16} />
-          <span>Refresh Products</span>
-        </button>
-      </div>
-
-      {/* Updated grid with standard Tailwind classes */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 product-grid">
-        {products.map((product) => (
-          <ProductCard key={product.productId} product={product} />
-        ))}
-      </div>
-
-      {/* Empty state */}
-      {products.length === 0 && !loading && (
-        <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">No products found.</p>
-        </div>
-      )}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {products.map((product) => (
+        <ProductCard key={product.productId} product={product} />
+      ))}
     </div>
   );
 }
