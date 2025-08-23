@@ -33,45 +33,43 @@ export default function ProductCard({ product }) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-200 flex flex-col h-full">
-      {/* Updated Image Section - Perfect fitting */}
-      <div className="h-48 bg-gray-100 relative overflow-hidden flex items-center justify-center">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-200">
+      {/* Updated Image Section */}
+      <div className="h-48 bg-gray-100 flex items-center justify-center relative">
         {product.imageUrl && !imageError ? (
-          <div className="w-full h-full">
-            <img
-              src={product.imageUrl}
-              alt={product.name}
-              className="w-full h-full object-cover object-center absolute inset-0"
-              onError={() => {
-                setImageError(true);
-                if (product.imageUrl.startsWith('blob:')) {
-                  URL.revokeObjectURL(product.imageUrl);
-                }
-              }}
-              loading="lazy"
-            />
-          </div>
+          <img
+            src={product.imageUrl}
+            alt={product.name}
+            className="h-full w-full object-cover"
+            onError={(e) => {
+              setImageError(true);
+              if (product.imageUrl.startsWith('blob:')) {
+                URL.revokeObjectURL(product.imageUrl);
+              }
+            }}
+            loading="lazy"
+          />
         ) : (
-          <div className="flex flex-col items-center justify-center text-gray-500 p-4">
+          <div className="flex flex-col items-center justify-center text-gray-500">
             <ImageOff size={32} className="mb-2 text-gray-400" />
-            <span className="text-sm font-medium text-center">No image available</span>
+            <span className="text-sm font-medium">No image available</span>
           </div>
         )}
       </div>
 
-      <div className="p-4 flex flex-col flex-grow">
-        <h3 className="font-semibold text-lg mb-2 text-gray-900 line-clamp-2 min-h-[3rem]">
+      <div className="p-4">
+        <h3 className="font-semibold text-lg mb-2 text-gray-900 truncate">
           {product.name}
         </h3>
 
         {product.description && (
-          <p className="text-gray-700 text-sm mb-3 line-clamp-3 flex-grow">
+          <p className="text-gray-700 text-sm mb-3 line-clamp-2">
             {product.description}
           </p>
         )}
 
         {product.category && product.category !== 'uncategorized' && (
-          <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mb-3 font-medium self-start">
+          <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mb-3 font-medium">
             {product.category}
           </span>
         )}
@@ -82,24 +80,22 @@ export default function ProductCard({ product }) {
           </div>
         )}
 
-        <div className="flex items-center justify-between mt-auto">
-          <span className="text-xl font-bold text-green-700">
+        <div className="flex items-center justify-between mt-4">
+          <span className="text-2xl font-bold text-green-700">
             ${typeof product.price === 'number' ? product.price.toFixed(2) : parseFloat(product.price).toFixed(2)}
           </span>
 
           <button
             onClick={handleAddToCart}
             disabled={loading}
-            className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-3 py-2 rounded-lg flex items-center space-x-1 transition-colors disabled:cursor-not-allowed font-medium text-sm sm:text-base"
+            className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-3 py-2 rounded-lg flex items-center space-x-1 transition-colors disabled:cursor-not-allowed font-medium"
           >
             {loading ? (
               <Loader2 size={16} className="animate-spin" />
             ) : (
               <ShoppingCart size={16} />
             )}
-            <span className="font-medium hidden sm:inline">
-              {loading ? 'Adding...' : 'Add to Cart'}
-            </span>
+            <span className="font-medium">{loading ? 'Adding...' : 'Add to Cart'}</span>
           </button>
         </div>
       </div>

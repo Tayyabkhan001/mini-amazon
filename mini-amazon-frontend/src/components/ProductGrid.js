@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
 import { productsAPI } from '@/lib/api';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw } from 'lucide-react'; // Add this import
 
 export default function ProductGrid() {
   const [products, setProducts] = useState([]);
@@ -56,7 +56,7 @@ export default function ProductGrid() {
       <div className="text-center py-12">
         <p className="text-red-500 mb-4">{error}</p>
         <button
-          onClick={fetchProducts}
+          onClick={fetchProducts} // Now this will work
           className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600"
         >
           Try Again
@@ -66,31 +66,23 @@ export default function ProductGrid() {
   }
 
   return (
-    <div className="p-4">
+    <div>
       {/* Add Refresh Button */}
       <div className="flex justify-end mb-6">
         <button
-          onClick={fetchProducts}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-blue-600 transition-colors"
+          onClick={fetchProducts} // Now this will work
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-blue-600"
         >
           <RefreshCw size={16} />
           <span>Refresh Products</span>
         </button>
       </div>
 
-      {/* Updated grid for better responsiveness */}
-      <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {products.map((product) => (
           <ProductCard key={product.productId} product={product} />
         ))}
       </div>
-
-      {/* Empty state */}
-      {products.length === 0 && !loading && (
-        <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">No products found.</p>
-        </div>
-      )}
     </div>
   );
 }
