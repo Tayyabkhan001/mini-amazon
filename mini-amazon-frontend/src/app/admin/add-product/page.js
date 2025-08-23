@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { productsAPI } from '@/lib/api';
+import { uploadToS3 } from '@/lib/s3-upload'; // Add this import
 import ImageUpload from '@/components/ImageUpload';
 import { ArrowLeft, Save } from 'lucide-react';
 import Link from 'next/link';
@@ -36,7 +37,7 @@ export default function AddProductPage() {
     }
   }, [isAuthenticated, user, authLoading, router]);
 
-  // ✅ Updated handleSubmit with your provided code
+  // ✅ UPDATED: S3 Image Upload
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -45,16 +46,22 @@ export default function AddProductPage() {
     try {
       let imageUrl = '';
 
-      // If image file is selected, create a local URL for demo
+      // Upload to S3 if image is selected
       if (imageFile) {
-        imageUrl = URL.createObjectURL(imageFile);
-        console.log('Using local image URL:', imageUrl);
+        try {
+          imageUrl = await uploadToS3(imageFile);
+          console.log('✅ Image uploaded to S3:', imageUrl);
+        } catch (uploadError) {
+          console.error('S3 upload failed, using placeholder');
+          // Fallback to placeholder if S3 upload fails
+          imageUrl = `https://via.placeholder.com/300x200/0077be/white?text=${encodeURIComponent(formData.name)}`;
+        }
       }
 
       const productData = {
         ...formData,
         price: parseFloat(formData.price),
-        imageUrl: imageUrl // Use the local URL or empty string
+        imageUrl: imageUrl // Use S3 URL or placeholder
       };
 
       console.log('Sending product data:', productData);
@@ -64,9 +71,10 @@ export default function AddProductPage() {
 
       alert('Product added successfully!');
       router.push('/');
+
     } catch (error) {
       console.error('Error adding product:', error);
-      setError('Failed to add product. Please try again.');
+      setError(error.message || 'Failed to add product. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -109,7 +117,7 @@ export default function AddProductPage() {
           </label>
           <ImageUpload onImageUpload={setImageFile} existingImageUrl="" />
           <p className="text-sm text-gray-500 mt-2">
-            Demo feature: For now, images are stored temporarily in the browser
+            Images are uploaded to AWS S3 for permanent storage
           </p>
         </div>
 
