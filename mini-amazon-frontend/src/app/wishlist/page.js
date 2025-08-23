@@ -1,6 +1,7 @@
 'use client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Heart, ShoppingCart, Plus } from 'lucide-react';
+import { useState } from 'react';
 
 export default function WishlistPage() {
   const { isAuthenticated } = useAuth();
