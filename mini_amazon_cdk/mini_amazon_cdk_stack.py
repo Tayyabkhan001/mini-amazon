@@ -144,14 +144,13 @@ class MiniAmazonCdkStack(Stack):
             }
         )
 
-        # Presigned URL Lambda
         generate_presigned_url_lambda = _lambda.Function(
             self, "GeneratePresignedUrlFunction",
             runtime=_lambda.Runtime.PYTHON_3_9,
-            handler="generate_presigned_url.handler",
+            handler="generate_presigned_url.handler",  # ← This must match your function name
             code=_lambda.Code.from_asset("lambda"),
             environment={
-                "IMAGES_BUCKET_NAME": product_images_bucket.bucket_name
+                "S3_BUCKET_NAME": product_images_bucket.bucket_name
             }
         )
 
@@ -414,6 +413,15 @@ class MiniAmazonCdkStack(Stack):
             apigateway.LambdaIntegration(generate_presigned_url_lambda),
             authorization_type=apigateway.AuthorizationType.NONE
         )
+
+        # ===== ADDED: Presigned URL endpoint =====
+        presigned_url_resource = api.root.add_resource("presigned-url")
+        presigned_url_resource.add_method(
+            "GET",
+            apigateway.LambdaIntegration(generate_presigned_url_lambda),
+            authorization_type=apigateway.AuthorizationType.NONE
+        )
+        # ===== END OF ADDED CODE =====
 
         # Add auth endpoints
         auth_resource = api.root.add_resource("auth")
