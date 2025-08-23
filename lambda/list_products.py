@@ -10,45 +10,34 @@ table = dynamodb.Table(table_name)
 
 
 def handler(event, context):
-    # CORS headers
+    # ADD CORS HEADERS
     headers = {
-        'Access-Control-Allow-Origin': 'http://localhost:3000',
+        'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         'Access-Control-Allow-Methods': 'GET, OPTIONS',
         'Access-Control-Allow-Credentials': 'true'
     }
 
     try:
-        # Debug logging
-        print("📦 List Products Lambda triggered")
-        print("Event:", json.dumps(event))
-
         # Get category from query parameters
         query_params = event.get('queryStringParameters', {})
         category = query_params.get('category') if query_params else None
-        print(f"Category filter: {category}")
 
-        # Use STRONG CONSISTENCY to get immediate results
         if category:
-            print("Filtering by category:", category)
+            # Filter by category using scan
             response = table.scan(
-                FilterExpression=boto3.dynamodb.conditions.Attr('category').eq(category),
-                ConsistentRead=True  # ← ADDED STRONG CONSISTENCY
+                FilterExpression=boto3.dynamodb.conditions.Attr('category').eq(category)
             )
         else:
-            print("Getting all products")
-            response = table.scan(
-                ConsistentRead=True  # ← ADDED STRONG CONSISTENCY
-            )
+            # Get all products if no category specified
+            response = table.scan()
 
         products = response.get('Items', [])
-        print(f"✅ Found {len(products)} products")
 
         # Convert Decimal to float for JSON serialization
         for product in products:
             if 'price' in product:
                 product['price'] = float(product['price'])
-            print(f"Product: {product.get('name')} (ID: {product.get('productId')})")
 
         return {
             'statusCode': 200,
@@ -61,16 +50,14 @@ def handler(event, context):
         }
 
     except ClientError as e:
-        print(f"❌ DynamoDB Error: {str(e)}")
         return {
             'statusCode': 500,
             'headers': headers,
             'body': json.dumps({'error': f'DynamoDB error: {str(e)}'})
         }
     except Exception as e:
-        print(f"❌ Unexpected Error: {str(e)}")
         return {
             'statusCode': 500,
-            'headers': headers,
+            'headers': headers,  # ← ADD HEADERS TO ERROR RESPONSE TOO
             'body': json.dumps({'error': f'Internal server error: {str(e)}'})
         }
