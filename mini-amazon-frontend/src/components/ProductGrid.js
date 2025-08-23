@@ -1,21 +1,17 @@
 // src/components/ProductGrid.js
 'use client';
 
-
 import { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
 import { productsAPI } from '@/lib/api';
-
-
-
-
+import { RefreshCw } from 'lucide-react';
 
 export default function ProductGrid() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-
+  // Define fetchProducts function first
   const fetchProducts = async () => {
     try {
       setLoading(true);
@@ -25,7 +21,7 @@ export default function ProductGrid() {
       const response = await productsAPI.getAll();
 
       // Handle the actual AWS response format
-      console.log('API Response:', response.data); // Check the actual structure
+      console.log('API Response:', response.data);
 
       let productsData = [];
 
@@ -70,10 +66,31 @@ export default function ProductGrid() {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      {products.map((product) => (
-        <ProductCard key={product.productId} product={product} />
-      ))}
+    <div className="p-4">
+      {/* Add Refresh Button */}
+      <div className="flex justify-end mb-6">
+        <button
+          onClick={fetchProducts}
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-blue-600 transition-colors"
+        >
+          <RefreshCw size={16} />
+          <span>Refresh Products</span>
+        </button>
+      </div>
+
+      {/* Updated grid for better responsiveness */}
+      <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+        {products.map((product) => (
+          <ProductCard key={product.productId} product={product} />
+        ))}
+      </div>
+
+      {/* Empty state */}
+      {products.length === 0 && !loading && (
+        <div className="text-center py-12">
+          <p className="text-gray-500 text-lg">No products found.</p>
+        </div>
+      )}
     </div>
   );
 }

@@ -33,24 +33,26 @@ export default function ProductCard({ product }) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-200 flex flex-col h-full product-card">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow border border-gray-200 flex flex-col h-full">
       {/* Updated Image Section - Perfect fitting */}
-      <div className="h-48 bg-gray-100 relative overflow-hidden product-image-container">
+      <div className="h-48 bg-gray-100 relative overflow-hidden flex items-center justify-center">
         {product.imageUrl && !imageError ? (
-          <img
-            src={product.imageUrl}
-            alt={product.name}
-            className="product-image"
-            onError={() => {
-              setImageError(true);
-              if (product.imageUrl.startsWith('blob:')) {
-                URL.revokeObjectURL(product.imageUrl);
-              }
-            }}
-            loading="lazy"
-          />
+          <div className="w-full h-full">
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              className="w-full h-full object-cover object-center absolute inset-0"
+              onError={() => {
+                setImageError(true);
+                if (product.imageUrl.startsWith('blob:')) {
+                  URL.revokeObjectURL(product.imageUrl);
+                }
+              }}
+              loading="lazy"
+            />
+          </div>
         ) : (
-          <div className="flex flex-col items-center justify-center text-gray-500 p-4 absolute inset-0">
+          <div className="flex flex-col items-center justify-center text-gray-500 p-4">
             <ImageOff size={32} className="mb-2 text-gray-400" />
             <span className="text-sm font-medium text-center">No image available</span>
           </div>
