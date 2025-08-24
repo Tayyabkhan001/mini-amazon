@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { productsAPI } from '@/lib/api';
-import { uploadToS3 } from '@/lib/s3-upload'; // Add this import
+import { uploadToS3 } from '@/lib/s3-upload';
 import ImageUpload from '@/components/ImageUpload';
 import { ArrowLeft, Save } from 'lucide-react';
 import Link from 'next/link';
@@ -37,7 +37,7 @@ export default function AddProductPage() {
     }
   }, [isAuthenticated, user, authLoading, router]);
 
-  // ✅ UPDATED: S3 Image Upload
+  // ✅ UPDATED: Enhanced S3 Image Upload with better logging
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -49,13 +49,18 @@ export default function AddProductPage() {
       // Upload to S3 if image is selected
       if (imageFile) {
         try {
+          console.log('🖼️ Starting image upload process...');
           imageUrl = await uploadToS3(imageFile);
-          console.log('✅ Image uploaded to S3:', imageUrl);
+          console.log('✅ Image uploaded to S3 successfully:', imageUrl);
         } catch (uploadError) {
-          console.error('S3 upload failed, using placeholder');
+          console.error('❌ S3 upload failed with details:', uploadError);
+          console.log('🔄 Falling back to placeholder image');
           // Fallback to placeholder if S3 upload fails
           imageUrl = `https://via.placeholder.com/300x200/0077be/white?text=${encodeURIComponent(formData.name)}`;
         }
+      } else {
+        console.log('📸 No image selected, using placeholder');
+        imageUrl = `https://via.placeholder.com/300x200/0077be/white?text=${encodeURIComponent(formData.name)}`;
       }
 
       const productData = {
@@ -64,16 +69,16 @@ export default function AddProductPage() {
         imageUrl: imageUrl // Use S3 URL or placeholder
       };
 
-      console.log('Sending product data:', productData);
+      console.log('📦 Sending product data to backend:', productData);
 
       const response = await productsAPI.create(productData);
-      console.log('Create product response:', response);
+      console.log('✅ Create product response:', response);
 
       alert('Product added successfully!');
       router.push('/');
 
     } catch (error) {
-      console.error('Error adding product:', error);
+      console.error('💥 Error adding product:', error);
       setError(error.message || 'Failed to add product. Please try again.');
     } finally {
       setLoading(false);
@@ -117,7 +122,10 @@ export default function AddProductPage() {
           </label>
           <ImageUpload onImageUpload={setImageFile} existingImageUrl="" />
           <p className="text-sm text-gray-500 mt-2">
-            Images are uploaded to AWS S3 for permanent storage
+            {imageFile
+              ? `Selected: ${imageFile.name} (${(imageFile.size / 1024).toFixed(1)} KB)`
+              : 'No image selected - will use placeholder'
+            }
           </p>
         </div>
 
