@@ -14,7 +14,7 @@ JWT_SECRET = os.environ.get('JWT_SECRET', 'your-super-secret-jwt-key-change-in-p
 def auth_middleware(handler):
     def wrapper(event, context):
         cors_headers = {
-            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': 'Https://Mini-Amazon-Qynf.Vercel.App,Http://Localhost:3000',
             'Access-Control-Allow-Headers': 'Content-Type, Authorization',
             'Access-Control-Allow-Methods': 'PUT, OPTIONS'
         }
@@ -54,7 +54,7 @@ def auth_middleware(handler):
 @auth_middleware
 def handler(event, context):
     headers = {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': 'Https://Mini-Amazon-Qynf.Vercel.App,Http://Localhost:3000',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         'Access-Control-Allow-Methods': 'PUT, OPTIONS'
     }

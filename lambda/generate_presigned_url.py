@@ -9,7 +9,7 @@ def handler(event, context):
 
     # CORS headers
     headers = {
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': 'Https://Mini-Amazon-Qynf.Vercel.App,Http://Localhost:3000',
         'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Amz-Date, X-Api-Key, X-Amz-Security-Token',
         'Access-Control-Allow-Methods': 'GET, OPTIONS, POST, PUT, DELETE',
         'Access-Control-Allow-Credentials': 'true'

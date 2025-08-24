@@ -6,13 +6,12 @@ from datetime import datetime
 
 s3 = boto3.client('s3')
 
-
 def handler(event, context):
-    # CORS headers
+    # ✅ UPDATED CORS headers with your actual Vercel domain
     headers = {
-        'Access-Control-Allow-Origin': 'https://your-vercel-url.vercel.app',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        'Access-Control-Allow-Methods': 'GET, OPTIONS',
+        'Access-Control-Allow-Origin': 'https://mini-amazon-qynf.vercel.app,http://localhost:3000',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Amz-Date, X-Api-Key, X-Amz-Security-Token',
+        'Access-Control-Allow-Methods': 'GET, OPTIONS, PUT',
         'Access-Control-Allow-Credentials': 'true'
     }
 
