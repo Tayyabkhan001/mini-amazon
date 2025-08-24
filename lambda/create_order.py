@@ -27,9 +27,16 @@ def convert_decimals(obj):
 
 def auth_middleware(handler):
     def wrapper(event, context):
+        cors_headers = {
+            'Access-Control-Allow-Origin': 'https://mini-amazon-qynf.vercel.app',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS'
+        }
+
         if event.get('httpMethod') == 'OPTIONS':
             return {
                 'statusCode': 200,
+                'headers': cors_headers,
                 'body': json.dumps({'message': 'CORS preflight successful'})
             }
 
@@ -38,6 +45,7 @@ def auth_middleware(handler):
             if not auth_header or not auth_header.startswith('Bearer '):
                 return {
                     'statusCode': 401,
+                    'headers': cors_headers,
                     'body': json.dumps({'error': 'Authorization token required'})
                 }
 
@@ -47,11 +55,11 @@ def auth_middleware(handler):
             return handler(event, context)
 
         except jwt.ExpiredSignatureError:
-            return {'statusCode': 401, 'body': json.dumps({'error': 'Token expired'})}
+            return {'statusCode': 401, 'headers': cors_headers, 'body': json.dumps({'error': 'Token expired'})}
         except jwt.InvalidTokenError:
-            return {'statusCode': 401, 'body': json.dumps({'error': 'Invalid token'})}
+            return {'statusCode': 401, 'headers': cors_headers, 'body': json.dumps({'error': 'Invalid token'})}
         except Exception as e:
-            return {'statusCode': 500,
+            return {'statusCode': 500, 'headers': cors_headers,
                     'body': json.dumps({'error': f'Authentication error: {str(e)}'})}
 
     return wrapper
@@ -59,6 +67,12 @@ def auth_middleware(handler):
 
 @auth_middleware
 def handler(event, context):
+    headers = {
+        'Access-Control-Allow-Origin': 'https://mini-amazon-qynf.vercel.app',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+    }
+
     try:
         user_id = event['user']['userId']
         user_email = event['user']['email']
@@ -73,6 +87,7 @@ def handler(event, context):
         if not cart_items:
             return {
                 'statusCode': 400,
+                'headers': headers,
                 'body': json.dumps({'error': 'Cart is empty'})
             }
 
@@ -108,6 +123,7 @@ def handler(event, context):
 
         return {
             'statusCode': 201,
+            'headers': headers,
             'body': json.dumps({
                 'message': 'Order created successfully',
                 'order': convert_decimals({
@@ -123,5 +139,6 @@ def handler(event, context):
     except Exception as e:
         return {
             'statusCode': 500,
+            'headers': headers,
             'body': json.dumps({'error': f'Internal server error: {str(e)}'})
         }
