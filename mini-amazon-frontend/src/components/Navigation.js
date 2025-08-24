@@ -28,14 +28,14 @@ export default function Navigation() {
                   <>
                     <Link
                       href="/admin"
-                      className="flex items-center space-x-1 text-gray-700 hover:text-blue-600"
+                      className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors duration-200"
                     >
                       <Settings size={18} />
                       <span>Admin Dashboard</span>
                     </Link>
                     <Link
                       href="/admin/add-product"
-                      className="flex items-center space-x-1 text-gray-700 hover:text-blue-600"
+                      className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors duration-200"
                     >
                       <Plus size={18} />
                       <span>Add Product</span>
@@ -46,7 +46,7 @@ export default function Navigation() {
                 {/* Cart Link */}
                 <Link
                   href="/cart"
-                  className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 relative"
+                  className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 relative transition-colors duration-200"
                 >
                   <ShoppingCart size={20} />
                   <span>Cart</span>
@@ -60,7 +60,7 @@ export default function Navigation() {
                 {/* Profile Link */}
                 <Link
                   href="/profile"
-                  className="flex items-center space-x-1 text-gray-700 hover:text-blue-600"
+                  className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors duration-200"
                 >
                   <UserCircle size={20} />
                   <span>Profile</span>
@@ -75,7 +75,7 @@ export default function Navigation() {
                 {/* Logout Button */}
                 <button
                   onClick={logout}
-                  className="flex items-center space-x-1 text-red-600 hover:text-red-700"
+                  className="flex items-center space-x-1 text-red-600 hover:text-red-700 transition-colors duration-200"
                 >
                   <LogOut size={18} />
                   <span>Logout</span>
@@ -85,13 +85,13 @@ export default function Navigation() {
               <div className="flex items-center space-x-4">
                 <Link
                   href="/login"
-                  className="text-blue-600 hover:text-blue-700"
+                  className="text-blue-600 hover:text-blue-700 transition-colors duration-200"
                 >
                   Login
                 </Link>
                 <Link
                   href="/register"
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg"
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-200"
                 >
                   Register
                 </Link>
