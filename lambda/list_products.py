@@ -10,14 +10,6 @@ table = dynamodb.Table(table_name)
 
 
 def handler(event, context):
-    # ADD CORS HEADERS
-    headers = {
-        'Access-Control-Allow-Origin': 'Https://Mini-Amazon-Qynf.Vercel.App,Http://Localhost:3000',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        'Access-Control-Allow-Methods': 'GET, OPTIONS',
-        'Access-Control-Allow-Credentials': 'true'
-    }
-
     try:
         # Get category from query parameters
         query_params = event.get('queryStringParameters', {})
@@ -41,7 +33,6 @@ def handler(event, context):
 
         return {
             'statusCode': 200,
-            'headers': headers,
             'body': json.dumps({
                 'products': products,
                 'count': len(products),
@@ -52,12 +43,10 @@ def handler(event, context):
     except ClientError as e:
         return {
             'statusCode': 500,
-            'headers': headers,
             'body': json.dumps({'error': f'DynamoDB error: {str(e)}'})
         }
     except Exception as e:
         return {
             'statusCode': 500,
-            'headers': headers,  # ← ADD HEADERS TO ERROR RESPONSE TOO
             'body': json.dumps({'error': f'Internal server error: {str(e)}'})
         }

@@ -83,10 +83,21 @@ class MiniAmazonCdkStack(Stack):
             rest_api_name="Products Service",
             description="API for managing products",
             default_cors_preflight_options=apigateway.CorsOptions(
-                allow_origins=apigateway.Cors.ALL_ORIGINS,
-                allow_methods=apigateway.Cors.ALL_METHODS,
-                allow_headers=["Content-Type", "Authorization", "X-Amz-Date", "X-Api-Key", "X-Amz-Security-Token"],
-                status_code=200
+                allow_origins=[
+                    "https://mini-amazon-qynf.vercel.app"
+                ],
+                allow_methods=[
+                    "GET", "POST", "PUT", "DELETE", "OPTIONS"
+                ],
+                allow_headers=[
+                    "Content-Type",
+                    "Authorization",
+                    "X-Amz-Date",
+                    "X-Api-Key",
+                    "X-Amz-Security-Token"
+                ],
+                status_code=200,
+                allow_credentials=True
             )
         )
 

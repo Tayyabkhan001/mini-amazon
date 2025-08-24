@@ -8,13 +8,6 @@ dynamodb = boto3.resource('dynamodb')
 
 
 def handler(event, context):
-    # CORS headers
-    headers = {
-        'Access-Control-Allow-Origin': 'Https://Mini-Amazon-Qynf.Vercel.App,Http://Localhost:3000',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'OPTIONS,POST'
-    }
-
     try:
         print("Received event:", json.dumps(event))
 
@@ -22,7 +15,6 @@ def handler(event, context):
         if 'body' not in event:
             return {
                 'statusCode': 400,
-                'headers': headers,
                 'body': json.dumps({'error': 'No request body'})
             }
 
@@ -37,7 +29,6 @@ def handler(event, context):
         if not all([email, password, name]):
             return {
                 'statusCode': 400,
-                'headers': headers,
                 'body': json.dumps({'error': 'Missing required fields: email, password, name'})
             }
 
@@ -52,7 +43,6 @@ def handler(event, context):
         if response.get('Items') and len(response['Items']) > 0:
             return {
                 'statusCode': 409,
-                'headers': headers,
                 'body': json.dumps({'error': 'User already exists'})
             }
 
@@ -70,7 +60,6 @@ def handler(event, context):
 
         return {
             'statusCode': 201,
-            'headers': headers,
             'body': json.dumps({
                 'message': 'User created successfully',
                 'userId': user_id,
@@ -83,6 +72,5 @@ def handler(event, context):
         print("Error:", str(e))
         return {
             'statusCode': 500,
-            'headers': headers,
             'body': json.dumps({'error': f'Internal server error: {str(e)}'})
         }

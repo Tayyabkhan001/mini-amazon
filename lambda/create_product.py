@@ -14,18 +14,9 @@ JWT_SECRET = os.environ.get('JWT_SECRET', 'your-super-secret-jwt-key-change-in-p
 # Auth middleware function
 def auth_middleware(handler):
     def wrapper(event, context):
-        # CORS headers
-        cors_headers = {
-            'Access-Control-Allow-Origin': 'Https://Mini-Amazon-Qynf.Vercel.App,Http://Localhost:3000',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS'
-        }
-
-        # Handle OPTIONS request for CORS preflight
         if event.get('httpMethod') == 'OPTIONS':
             return {
                 'statusCode': 200,
-                'headers': cors_headers,
                 'body': json.dumps({'message': 'CORS preflight successful'})
             }
 
@@ -35,7 +26,6 @@ def auth_middleware(handler):
             if not auth_header or not auth_header.startswith('Bearer '):
                 return {
                     'statusCode': 401,
-                    'headers': cors_headers,
                     'body': json.dumps({'error': 'Authorization token required'})
                 }
 
@@ -49,19 +39,16 @@ def auth_middleware(handler):
         except jwt.ExpiredSignatureError:
             return {
                 'statusCode': 401,
-                'headers': cors_headers,
                 'body': json.dumps({'error': 'Token expired'})
             }
         except jwt.InvalidTokenError:
             return {
                 'statusCode': 401,
-                'headers': cors_headers,
                 'body': json.dumps({'error': 'Invalid token'})
             }
         except Exception as e:
             return {
                 'statusCode': 500,
-                'headers': cors_headers,
                 'body': json.dumps({'error': f'Authentication error: {str(e)}'})
             }
 
@@ -71,13 +58,6 @@ def auth_middleware(handler):
 # Main handler with auth middleware
 @auth_middleware
 def handler(event, context):
-    # CORS headers
-    headers = {
-        'Access-Control-Allow-Origin': 'Https://Mini-Amazon-Qynf.Vercel.App,Http://Localhost:3000',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS'
-    }
-
     try:
         # Get user info from the middleware
         user_id = event['user']['userId']
@@ -100,7 +80,6 @@ def handler(event, context):
         if not all([product_id, name, price]):
             return {
                 'statusCode': 400,
-                'headers': headers,
                 'body': json.dumps({'error': 'Missing required fields: productId, name, price'})
             }
 
@@ -121,7 +100,6 @@ def handler(event, context):
 
         return {
             'statusCode': 201,
-            'headers': headers,
             'body': json.dumps({
                 'message': 'Product created successfully',
                 'product': {
@@ -139,12 +117,10 @@ def handler(event, context):
     except ClientError as e:
         return {
             'statusCode': 500,
-            'headers': headers,
             'body': json.dumps({'error': f'DynamoDB error: {str(e)}'})
         }
     except Exception as e:
         return {
             'statusCode': 500,
-            'headers': headers,
             'body': json.dumps({'error': f'Internal server error: {str(e)}'})
         }

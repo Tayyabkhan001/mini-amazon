@@ -3,8 +3,9 @@ export const uploadToS3 = async (file) => {
   try {
     console.log('🔄 Starting S3 upload for file:', file.name, file.type, file.size);
 
-    // 1. Get presigned URL from backend
-    const response = await fetch('https://sfykc5q529.execute-api.ap-south-1.amazonaws.com/prod/presigned-url');
+    // 1. Get presigned URL from backend - USING ENVIRONMENT VARIABLE
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    const response = await fetch(`${API_URL}/presigned-url`);
 
     // Check if presigned URL request failed
     if (!response.ok) {
@@ -31,7 +32,7 @@ export const uploadToS3 = async (file) => {
       body: file,
       headers: {
         'Content-Type': file.type,
-        'Content-Length': file.size.toString(),
+        // Remove 'Content-Length' - browser sets this automatically
       },
     });
 

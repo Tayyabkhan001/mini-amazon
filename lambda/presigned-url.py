@@ -7,19 +7,10 @@ from datetime import datetime
 s3 = boto3.client('s3')
 
 def handler(event, context):
-    # ✅ UPDATED CORS headers with your actual Vercel domain
-    headers = {
-        'Access-Control-Allow-Origin': 'https://mini-amazon-qynf.vercel.app,http://localhost:3000',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Amz-Date, X-Api-Key, X-Amz-Security-Token',
-        'Access-Control-Allow-Methods': 'GET, OPTIONS, PUT',
-        'Access-Control-Allow-Credentials': 'true'
-    }
-
     # Handle OPTIONS preflight
     if event.get('httpMethod') == 'OPTIONS':
         return {
             'statusCode': 200,
-            'headers': headers,
             'body': json.dumps({'message': 'CORS preflight successful'})
         }
 
@@ -44,7 +35,6 @@ def handler(event, context):
 
         return {
             'statusCode': 200,
-            'headers': headers,
             'body': json.dumps({
                 'presignedUrl': presigned_url,
                 'publicUrl': public_url,
@@ -55,6 +45,5 @@ def handler(event, context):
     except Exception as e:
         return {
             'statusCode': 500,
-            'headers': headers,
             'body': json.dumps({'error': str(e)})
         }

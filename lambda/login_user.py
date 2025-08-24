@@ -9,13 +9,6 @@ JWT_SECRET = "your-super-secret-jwt-key-change-in-production"
 
 
 def handler(event, context):
-    # CORS headers
-    headers = {
-        'Access-Control-Allow-Origin': 'Https://Mini-Amazon-Qynf.Vercel.App,Http://Localhost:3000',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'OPTIONS,POST'
-    }
-
     try:
         print("Login event:", json.dumps(event))
 
@@ -23,7 +16,6 @@ def handler(event, context):
         if 'body' not in event:
             return {
                 'statusCode': 400,
-                'headers': headers,
                 'body': json.dumps({'error': 'No request body'})
             }
 
@@ -37,7 +29,6 @@ def handler(event, context):
         if not all([email, password]):
             return {
                 'statusCode': 400,
-                'headers': headers,
                 'body': json.dumps({'error': 'Missing email or password'})
             }
 
@@ -54,7 +45,6 @@ def handler(event, context):
         if not response.get('Items') or len(response['Items']) == 0:
             return {
                 'statusCode': 401,
-                'headers': headers,
                 'body': json.dumps({'error': 'Invalid credentials - user not found'})
             }
 
@@ -65,7 +55,6 @@ def handler(event, context):
         if user['password'] != password:
             return {
                 'statusCode': 401,
-                'headers': headers,
                 'body': json.dumps({'error': 'Invalid credentials - wrong password'})
             }
 
@@ -81,7 +70,6 @@ def handler(event, context):
         # Return success response
         return {
             'statusCode': 200,
-            'headers': headers,
             'body': json.dumps({
                 'message': 'Login successful',
                 'token': token,
@@ -100,6 +88,5 @@ def handler(event, context):
 
         return {
             'statusCode': 500,
-            'headers': headers,
             'body': json.dumps({'error': f'Internal server error: {str(e)}'})
         }
