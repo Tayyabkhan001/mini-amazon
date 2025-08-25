@@ -48,7 +48,7 @@ export default function Navigation() {
               {showMobileMenu ? <X size={24} /> : <Menu size={24} />}
             </button>
 
-            <Link href="/" className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center space-x-2" onClick={() => setShowMobileMenu(false)}>
               <div className="bg-blue-600 p-2 rounded-lg">
                 <span className="text-white text-xl">🛒</span>
               </div>
@@ -76,12 +76,14 @@ export default function Navigation() {
                     <Link
                       href="/admin"
                       className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100"
+                      title="Admin Dashboard"
                     >
                       <Settings size={20} />
                     </Link>
                     <Link
                       href="/admin/add-product"
                       className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100"
+                      title="Add Product"
                     >
                       <Plus size={20} />
                     </Link>
@@ -92,6 +94,7 @@ export default function Navigation() {
                 <Link
                   href="/cart"
                   className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 relative transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100"
+                  title="Shopping Cart"
                 >
                   <ShoppingCart size={22} />
                   {itemCount > 0 && (
@@ -101,14 +104,23 @@ export default function Navigation() {
                   )}
                 </Link>
 
+                {/* Profile Link - FIXED: Now visible on desktop */}
+                <Link
+                  href="/profile"
+                  className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100"
+                  title="User Profile"
+                >
+                  <UserCircle size={22} />
+                </Link>
+
                 {/* User Menu */}
                 <div className="flex items-center space-x-3 ml-2">
                   <div className="flex items-center space-x-2 bg-gray-100 rounded-full pl-3 pr-1 py-1">
-                    <UserCircle size={20} className="text-blue-600" />
                     <span className="text-sm font-medium text-gray-700">Hi, {user?.name?.split(' ')[0]}</span>
                     <button
                       onClick={logout}
                       className="p-1 text-gray-500 hover:text-red-600 rounded-full hover:bg-red-50 transition-colors"
+                      title="Logout"
                     >
                       <LogOut size={16} />
                     </button>
@@ -138,6 +150,7 @@ export default function Navigation() {
             <button
               onClick={toggleMobileSearch}
               className="p-2 text-gray-600 hover:text-blue-600 rounded-lg hover:bg-gray-100 transition-colors"
+              title="Search"
             >
               <Search size={24} />
             </button>
@@ -146,6 +159,8 @@ export default function Navigation() {
               <Link
                 href="/cart"
                 className="p-2 text-gray-600 hover:text-blue-600 relative rounded-lg hover:bg-gray-100 transition-colors"
+                title="Shopping Cart"
+                onClick={() => setShowMobileMenu(false)}
               >
                 <ShoppingCart size={24} />
                 {itemCount > 0 && (
@@ -170,7 +185,7 @@ export default function Navigation() {
 
         {/* Mobile Menu */}
         {showMobileMenu && (
-          <div className="md:hidden border-t border-gray-200 pt-4 pb-4">
+          <div className="md:hidden border-t border-gray-200 pt-4 pb-4 bg-white">
             <div className="space-y-2 px-2">
               {isAuthenticated ? (
                 <>
@@ -183,48 +198,51 @@ export default function Navigation() {
                     </div>
                   </div>
 
-                  {/* Admin Links */}
-                  {(user?.email === 'admin@example.com' || user?.email?.includes('admin')) && (
-                    <div className="grid grid-cols-2 gap-2 mt-3">
-                      <Link
-                        href="/admin"
-                        className="flex items-center justify-center space-x-2 text-gray-700 p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                        onClick={() => setShowMobileMenu(false)}
-                      >
-                        <Settings size={18} />
-                        <span>Admin</span>
-                      </Link>
-                      <Link
-                        href="/admin/add-product"
-                        className="flex items-center justify-center space-x-2 text-gray-700 p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                        onClick={() => setShowMobileMenu(false)}
-                      >
-                        <Plus size={18} />
-                        <span>Add Product</span>
-                      </Link>
-                    </div>
-                  )}
-
                   {/* Navigation Links */}
-                  <Link
-                    href="/profile"
-                    className="flex items-center space-x-3 p-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
-                    onClick={() => setShowMobileMenu(false)}
-                  >
-                    <User size={20} />
-                    <span>Profile</span>
-                  </Link>
+                  <div className="space-y-1">
+                    {/* PROFILE LINK - FIXED: Now visible in mobile menu */}
+                    <Link
+                      href="/profile"
+                      className="flex items-center space-x-3 p-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                      onClick={() => setShowMobileMenu(false)}
+                    >
+                      <UserCircle size={20} />
+                      <span>Profile</span>
+                    </Link>
 
-                  <button
-                    onClick={() => {
-                      logout();
-                      setShowMobileMenu(false);
-                    }}
-                    className="flex items-center space-x-3 p-3 text-red-600 w-full rounded-lg hover:bg-red-50 transition-colors"
-                  >
-                    <LogOut size={20} />
-                    <span>Logout</span>
-                  </button>
+                    {/* Admin Links */}
+                    {(user?.email === 'admin@example.com' || user?.email?.includes('admin')) && (
+                      <>
+                        <Link
+                          href="/admin"
+                          className="flex items-center space-x-3 p-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                          onClick={() => setShowMobileMenu(false)}
+                        >
+                          <Settings size={20} />
+                          <span>Admin Dashboard</span>
+                        </Link>
+                        <Link
+                          href="/admin/add-product"
+                          className="flex items-center space-x-3 p-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                          onClick={() => setShowMobileMenu(false)}
+                        >
+                          <Plus size={20} />
+                          <span>Add Product</span>
+                        </Link>
+                      </>
+                    )}
+
+                    <button
+                      onClick={() => {
+                        logout();
+                        setShowMobileMenu(false);
+                      }}
+                      className="flex items-center space-x-3 p-3 text-red-600 w-full rounded-lg hover:bg-red-50 transition-colors"
+                    >
+                      <LogOut size={20} />
+                      <span>Logout</span>
+                    </button>
+                  </div>
                 </>
               ) : (
                 <div className="grid grid-cols-2 gap-3">
