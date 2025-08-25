@@ -2,7 +2,7 @@
 'use client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
-import { ShoppingCart, User, LogOut, UserCircle, Plus, Settings, Search, Menu, X } from 'lucide-react';
+import { ShoppingCart, User, LogOut, UserCircle, Plus, Settings, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -13,57 +13,30 @@ export default function Navigation() {
   const { itemCount } = useCart();
   const [searchQuery, setSearchQuery] = useState('');
   const [showMobileSearch, setShowMobileSearch] = useState(false);
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const router = useRouter();
 
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (query.trim()) {
       router.push(`/search?q=${encodeURIComponent(query.trim())}`);
-      setShowMobileSearch(false);
     }
   };
 
   const toggleMobileSearch = () => {
     setShowMobileSearch(!showMobileSearch);
-    setShowMobileMenu(false);
-  };
-
-  const toggleMobileMenu = () => {
-    setShowMobileMenu(!showMobileMenu);
-    setShowMobileSearch(false);
   };
 
   return (
-    <header className="navbar">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Main Navigation Bar */}
-        <div className="flex items-center justify-between h-16">
-          {/* Logo and Mobile Menu Button */}
+    <header className="bg-white shadow-sm border-b sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        {/* Top Row - Logo and User Actions */}
+        <div className="flex items-center justify-between mb-4 md:mb-0">
           <div className="flex items-center space-x-4">
-            <button
-              onClick={toggleMobileMenu}
-              className="md:hidden p-2 text-gray-600 hover:text-blue-600 rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              {showMobileMenu ? <X size={24} /> : <Menu size={24} />}
-            </button>
-
-            <Link href="/" className="flex items-center space-x-2" onClick={() => setShowMobileMenu(false)}>
-              <div className="bg-blue-600 p-2 rounded-lg">
-                <span className="text-white text-xl">🛒</span>
-              </div>
-              <h1 className="text-2xl font-bold text-gray-900 hidden sm:block">
-                Mini Amazon
+            <Link href="/">
+              <h1 className="text-2xl font-bold text-gray-900 cursor-pointer">
+                🛒 Mini Amazon
               </h1>
             </Link>
-          </div>
-
-          {/* Desktop Search Bar */}
-          <div className="hidden md:flex flex-1 max-w-2xl mx-8">
-            <SearchBar
-              onSearch={handleSearch}
-              placeholder="Search products..."
-            />
           </div>
 
           {/* Desktop User Actions */}
@@ -75,17 +48,17 @@ export default function Navigation() {
                   <>
                     <Link
                       href="/admin"
-                      className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100"
-                      title="Admin Dashboard"
+                      className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors duration-200"
                     >
-                      <Settings size={20} />
+                      <Settings size={18} />
+                      <span className="hidden lg:inline">Admin Dashboard</span>
                     </Link>
                     <Link
                       href="/admin/add-product"
-                      className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100"
-                      title="Add Product"
+                      className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors duration-200"
                     >
-                      <Plus size={20} />
+                      <Plus size={18} />
+                      <span className="hidden lg:inline">Add Product</span>
                     </Link>
                   </>
                 )}
@@ -93,12 +66,12 @@ export default function Navigation() {
                 {/* Cart Link */}
                 <Link
                   href="/cart"
-                  className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 relative transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100"
-                  title="Shopping Cart"
+                  className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 relative transition-colors duration-200"
                 >
-                  <ShoppingCart size={22} />
+                  <ShoppingCart size={20} />
+                  <span>Cart</span>
                   {itemCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                       {itemCount}
                     </span>
                   )}
@@ -107,37 +80,38 @@ export default function Navigation() {
                 {/* Profile Link */}
                 <Link
                   href="/profile"
-                  className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100"
-                  title="User Profile"
+                  className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors duration-200"
                 >
-                  <UserCircle size={22} />
+                  <UserCircle size={20} />
+                  <span>Profile</span>
                 </Link>
 
-                {/* User Menu */}
-                <div className="flex items-center space-x-3 ml-2">
-                  <div className="flex items-center space-x-2 bg-gray-100 rounded-full pl-3 pr-1 py-1">
-                    <span className="text-sm font-medium text-gray-700">Hi, {user?.name?.split(' ')[0]}</span>
-                    <button
-                      onClick={logout}
-                      className="p-1 text-gray-500 hover:text-red-600 rounded-full hover:bg-red-50 transition-colors"
-                      title="Logout"
-                    >
-                      <LogOut size={16} />
-                    </button>
-                  </div>
+                {/* User Welcome Message */}
+                <div className="flex items-center space-x-2">
+                  <User size={18} className="text-gray-600" />
+                  <span className="text-gray-700">Hi, {user?.name?.split(' ')[0]}</span>
                 </div>
+
+                {/* Logout Button */}
+                <button
+                  onClick={logout}
+                  className="flex items-center space-x-1 text-red-600 hover:text-red-700 transition-colors duration-200"
+                >
+                  <LogOut size={18} />
+                  <span>Logout</span>
+                </button>
               </>
             ) : (
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-4">
                 <Link
                   href="/login"
-                  className="text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200"
+                  className="text-blue-600 hover:text-blue-700 transition-colors duration-200"
                 >
                   Login
                 </Link>
                 <Link
                   href="/register"
-                  className="btn-primary"
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-200"
                 >
                   Register
                 </Link>
@@ -145,126 +119,111 @@ export default function Navigation() {
             )}
           </div>
 
-          {/* Mobile Search and Cart */}
-          <div className="flex items-center space-x-2 md:hidden">
-            <button
-              onClick={toggleMobileSearch}
-              className="p-2 text-gray-600 hover:text-blue-600 rounded-lg hover:bg-gray-100 transition-colors"
-              title="Search"
-            >
-              <Search size={24} />
-            </button>
-
-            {isAuthenticated && (
-              <Link
-                href="/cart"
-                className="p-2 text-gray-600 hover:text-blue-600 relative rounded-lg hover:bg-gray-100 transition-colors"
-                title="Shopping Cart"
-                onClick={() => setShowMobileMenu(false)}
-              >
-                <ShoppingCart size={24} />
-                {itemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
-                    {itemCount}
-                  </span>
-                )}
-              </Link>
-            )}
-          </div>
+          {/* Mobile Search Toggle Button */}
+          <button
+            onClick={toggleMobileSearch}
+            className="md:hidden p-2 text-gray-600 hover:text-blue-600"
+          >
+            <Search size={24} />
+          </button>
         </div>
 
-        {/* Mobile Search Bar */}
-        {showMobileSearch && (
-          <div className="md:hidden pb-4 px-2 slide-up">
+        {/* Search Bar - Desktop */}
+        <div className="hidden md:flex justify-center mb-4 md:mb-0">
+          <div className="w-full max-w-2xl">
             <SearchBar
               onSearch={handleSearch}
               placeholder="Search products..."
             />
           </div>
+        </div>
+
+        {/* Mobile Search Bar */}
+        {showMobileSearch && (
+          <div className="md:hidden mb-4">
+            <SearchBar
+              onSearch={(query) => {
+                handleSearch(query);
+                setShowMobileSearch(false);
+              }}
+              placeholder="Search products..."
+            />
+          </div>
         )}
 
-        {/* Mobile Menu */}
-        {showMobileMenu && (
-          <div className="md:hidden border-t border-gray-200 pt-4 pb-4 bg-white slide-up">
-            <div className="space-y-2 px-2">
-              {isAuthenticated ? (
-                <>
-                  {/* User Info */}
-                  <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                    <UserCircle size={24} className="text-blue-600" />
-                    <div>
-                      <p className="font-medium text-gray-900">{user?.name}</p>
-                      <p className="text-sm text-gray-500">{user?.email}</p>
-                    </div>
-                  </div>
+        {/* Mobile User Actions */}
+        <div className="md:hidden flex items-center justify-between pt-3 border-t">
+          {isAuthenticated ? (
+            <>
+              <div className="flex items-center space-x-4">
+                {/* Cart Link */}
+                <Link
+                  href="/cart"
+                  className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 relative transition-colors duration-200"
+                >
+                  <ShoppingCart size={20} />
+                  <span>Cart</span>
+                  {itemCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {itemCount}
+                    </span>
+                  )}
+                </Link>
 
-                  {/* Navigation Links */}
-                  <div className="space-y-1">
-                    {/* Profile Link */}
-                    <Link
-                      href="/profile"
-                      className="flex items-center space-x-3 p-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
-                      onClick={() => setShowMobileMenu(false)}
-                    >
-                      <UserCircle size={20} />
-                      <span>Profile</span>
-                    </Link>
+                {/* Profile Link */}
+                <Link
+                  href="/profile"
+                  className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors duration-200"
+                >
+                  <UserCircle size={20} />
+                  <span>Profile</span>
+                </Link>
 
-                    {/* Admin Links */}
-                    {(user?.email === 'admin@example.com' || user?.email?.includes('admin')) && (
-                      <>
-                        <Link
-                          href="/admin"
-                          className="flex items-center space-x-3 p-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
-                          onClick={() => setShowMobileMenu(false)}
-                        >
-                          <Settings size={20} />
-                          <span>Admin Dashboard</span>
-                        </Link>
-                        <Link
-                          href="/admin/add-product"
-                          className="flex items-center space-x-3 p-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
-                          onClick={() => setShowMobileMenu(false)}
-                        >
-                          <Plus size={20} />
-                          <span>Add Product</span>
-                        </Link>
-                      </>
-                    )}
+                {/* Logout Button */}
+                <button
+                  onClick={logout}
+                  className="flex items-center space-x-1 text-red-600 hover:text-red-700 transition-colors duration-200"
+                >
+                  <LogOut size={18} />
+                  <span>Logout</span>
+                </button>
+              </div>
 
-                    <button
-                      onClick={() => {
-                        logout();
-                        setShowMobileMenu(false);
-                      }}
-                      className="flex items-center space-x-3 p-3 text-red-600 w-full rounded-lg hover:bg-red-50 transition-colors"
-                    >
-                      <LogOut size={20} />
-                      <span>Logout</span>
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <div className="grid grid-cols-2 gap-3">
+              {/* Mobile Admin Links */}
+              {(user?.email === 'admin@example.com' || user?.email?.includes('admin')) && (
+                <div className="flex space-x-3">
                   <Link
-                    href="/login"
-                    className="text-center text-blue-600 hover:text-blue-700 p-3 rounded-lg border border-blue-200 hover:border-blue-300 transition-colors"
-                    onClick={() => setShowMobileMenu(false)}
+                    href="/admin"
+                    className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors duration-200 text-sm p-2 bg-gray-100 rounded-lg"
                   >
-                    Login
+                    <Settings size={16} />
                   </Link>
                   <Link
-                    href="/register"
-                    className="text-center btn-primary"
-                    onClick={() => setShowMobileMenu(false)}
+                    href="/admin/add-product"
+                    className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors duration-200 text-sm p-2 bg-gray-100 rounded-lg"
                   >
-                    Register
+                    <Plus size={16} />
                   </Link>
                 </div>
               )}
+            </>
+          ) : (
+            <div className="flex items-center space-x-4 w-full justify-center">
+              <Link
+                href="/login"
+                className="text-blue-600 hover:text-blue-700 transition-colors duration-200 flex-1 text-center"
+              >
+                Login
+              </Link>
+              <Link
+                href="/register"
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex-1 text-center"
+              >
+                Register
+              </Link>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </header>
   );
