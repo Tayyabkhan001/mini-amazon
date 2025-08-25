@@ -35,7 +35,7 @@ export default function Navigation() {
   };
 
   return (
-    <header className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50">
+    <header className="navbar">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Navigation Bar */}
         <div className="flex items-center justify-between h-16">
@@ -104,7 +104,7 @@ export default function Navigation() {
                   )}
                 </Link>
 
-                {/* Profile Link - FIXED: Now visible on desktop */}
+                {/* Profile Link */}
                 <Link
                   href="/profile"
                   className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100"
@@ -137,7 +137,7 @@ export default function Navigation() {
                 </Link>
                 <Link
                   href="/register"
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 font-medium shadow-sm hover:shadow-md"
+                  className="btn-primary"
                 >
                   Register
                 </Link>
@@ -175,7 +175,7 @@ export default function Navigation() {
 
         {/* Mobile Search Bar */}
         {showMobileSearch && (
-          <div className="md:hidden pb-4 px-2">
+          <div className="md:hidden pb-4 px-2 slide-up">
             <SearchBar
               onSearch={handleSearch}
               placeholder="Search products..."
@@ -185,7 +185,7 @@ export default function Navigation() {
 
         {/* Mobile Menu */}
         {showMobileMenu && (
-          <div className="md:hidden border-t border-gray-200 pt-4 pb-4 bg-white">
+          <div className="md:hidden border-t border-gray-200 pt-4 pb-4 bg-white slide-up">
             <div className="space-y-2 px-2">
               {isAuthenticated ? (
                 <>
@@ -200,7 +200,7 @@ export default function Navigation() {
 
                   {/* Navigation Links */}
                   <div className="space-y-1">
-                    {/* PROFILE LINK - FIXED: Now visible in mobile menu */}
+                    {/* Profile Link */}
                     <Link
                       href="/profile"
                       className="flex items-center space-x-3 p-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
@@ -255,7 +255,7 @@ export default function Navigation() {
                   </Link>
                   <Link
                     href="/register"
-                    className="text-center bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                    className="text-center btn-primary"
                     onClick={() => setShowMobileMenu(false)}
                   >
                     Register

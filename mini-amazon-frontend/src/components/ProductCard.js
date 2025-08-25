@@ -39,9 +39,9 @@ export default function ProductCard({ product }) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full group">
+    <div className="product-card group fade-in">
       {/* Image Section */}
-      <div className="relative h-60 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center overflow-hidden">
+      <div className="product-card-image">
         {product.imageUrl && !imageError ? (
           <>
             {!imageLoaded && (
@@ -83,7 +83,7 @@ export default function ProductCard({ product }) {
 
         {/* Category Badge */}
         {product.category && product.category !== 'uncategorized' && (
-          <span className="absolute top-3 left-3 bg-blue-600 text-white text-xs px-2 py-1 rounded-full font-medium capitalize">
+          <span className="badge-primary absolute top-3 left-3 capitalize">
             {product.category}
           </span>
         )}
@@ -141,14 +141,14 @@ export default function ProductCard({ product }) {
           <button
             onClick={handleAddToCart}
             disabled={loading}
-            className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-4 py-2.5 rounded-xl flex items-center space-x-2 transition-all duration-200 disabled:cursor-not-allowed font-medium shadow-sm hover:shadow-md hover:translate-y-[-1px] active:translate-y-0"
+            className="btn-primary flex items-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed"
           >
             {loading ? (
               <Loader2 size={18} className="animate-spin" />
             ) : (
               <ShoppingCart size={18} />
             )}
-            <span className="font-medium">{loading ? 'Adding...' : 'Add'}</span>
+            <span>{loading ? 'Adding...' : 'Add'}</span>
           </button>
         </div>
       </div>
