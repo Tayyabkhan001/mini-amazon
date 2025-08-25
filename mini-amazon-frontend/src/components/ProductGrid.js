@@ -139,19 +139,19 @@ export default function ProductGrid() {
   }
 
   return (
-    <div className="pb-8">
+    <div className="pb-6 px-3 sm:px-4">
       {/* Header with Controls */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
         <div>
-          <h2 className="text-3xl font-bold text-gray-900">
+          <h2 className="text-2xl font-bold text-gray-900">
             Our Products
           </h2>
-          <p className="text-gray-600 mt-2">{filteredProducts.length} products available</p>
+          <p className="text-gray-600 mt-1 text-sm">{filteredProducts.length} products available</p>
         </div>
 
-        <div className="flex items-center space-x-3">
-          {/* View Mode Toggle */}
-          <div className="flex bg-gray-100 rounded-lg p-1">
+        <div className="flex items-center space-x-2 w-full sm:w-auto justify-between sm:justify-end">
+          {/* View Mode Toggle - Hidden on mobile */}
+          <div className="hidden sm:flex bg-gray-100 rounded-lg p-1">
             <button
               onClick={() => setViewMode('grid')}
               className={`p-2 rounded-md transition-all duration-200 ${viewMode === 'grid' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
@@ -168,11 +168,11 @@ export default function ProductGrid() {
             </button>
           </div>
 
-          {/* Sort Dropdown */}
+          {/* Sort Dropdown - Simplified on mobile */}
           <select
             value={filters.sortBy}
             onChange={(e) => applyFilters({...filters, sortBy: e.target.value})}
-            className="bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+            className="bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm w-32"
           >
             <option value="name">Sort by Name</option>
             <option value="price-low">Price: Low to High</option>
@@ -182,19 +182,19 @@ export default function ProductGrid() {
           {/* Filter Button */}
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-gray-50 transition-all duration-200 shadow-sm"
+            className="bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-lg flex items-center space-x-2 hover:bg-gray-50 transition-all duration-200 shadow-sm text-sm"
           >
-            <SlidersHorizontal size={16} />
-            <span>Filter</span>
+            <SlidersHorizontal size={14} />
+            <span className="hidden sm:inline">Filter</span>
           </button>
 
-          {/* Refresh Button */}
+          {/* Refresh Button - Hidden on mobile */}
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 disabled:opacity-70 shadow-sm hover:shadow-md"
+            className="hidden sm:flex bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg items-center space-x-2 transition-all duration-200 disabled:opacity-70 shadow-sm hover:shadow-md text-sm"
           >
-            <RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} />
+            <RefreshCw size={14} className={refreshing ? 'animate-spin' : ''} />
             <span>Refresh</span>
           </button>
         </div>
@@ -202,13 +202,13 @@ export default function ProductGrid() {
 
       {/* Filters Panel */}
       {showFilters && (
-        <div className="bg-white p-6 rounded-xl shadow-md mb-6 border border-gray-200 transition-all duration-300">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
-            <div className="flex items-center space-x-3">
+        <div className="bg-white p-4 rounded-xl shadow-md mb-4 border border-gray-200 transition-all duration-300">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-base font-semibold text-gray-900">Filters</h3>
+            <div className="flex items-center space-x-2">
               <button
                 onClick={clearFilters}
-                className="text-sm text-blue-600 hover:text-blue-700 transition-colors font-medium"
+                className="text-xs text-blue-600 hover:text-blue-700 transition-colors font-medium"
               >
                 Clear All
               </button>
@@ -216,19 +216,19 @@ export default function ProductGrid() {
                 onClick={() => setShowFilters(false)}
                 className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Category Filter */}
             <div>
-              <label className="block text-sm font-medium mb-3 text-gray-700">Category</label>
+              <label className="block text-xs font-medium mb-2 text-gray-700">Category</label>
               <select
                 value={filters.category}
                 onChange={(e) => applyFilters({...filters, category: e.target.value})}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white text-sm"
               >
                 <option value="">All Categories</option>
                 {Array.from(new Set(products.map(p => p.category))).map(cat => (
@@ -239,11 +239,11 @@ export default function ProductGrid() {
 
             {/* Price Range Filter */}
             <div>
-              <label className="block text-sm font-medium mb-3 text-gray-700">
+              <label className="block text-xs font-medium mb-2 text-gray-700">
                 Price Range: ${filters.minPrice} - ${filters.maxPrice}
               </label>
 
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <input
                   type="range"
                   min="0"
@@ -251,10 +251,10 @@ export default function ProductGrid() {
                   step="10"
                   value={filters.maxPrice}
                   onChange={(e) => applyFilters({...filters, maxPrice: parseInt(e.target.value)})}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-600"
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-600"
                 />
 
-                <div className="flex justify-between text-sm text-gray-600">
+                <div className="flex justify-between text-xs text-gray-600">
                   <span>${filters.minPrice}</span>
                   <span>${filters.maxPrice}</span>
                 </div>
@@ -265,17 +265,17 @@ export default function ProductGrid() {
       )}
 
       {filteredProducts.length === 0 ? (
-        <div className="text-center py-16 bg-gray-50 rounded-xl border border-gray-200">
+        <div className="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
           <div className="max-w-md mx-auto">
-            <div className="bg-gray-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">📦</span>
+            <div className="bg-gray-200 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3">
+              <span className="text-xl">📦</span>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-            <p className="text-gray-600">Try adjusting your filters or check back later for new products.</p>
+            <h3 className="text-base font-medium text-gray-900 mb-1">No products found</h3>
+            <p className="text-gray-600 text-sm">Try adjusting your filters or check back later for new products.</p>
             {(filters.category || filters.maxPrice < 1000) && (
               <button
                 onClick={clearFilters}
-                className="mt-4 text-blue-600 hover:text-blue-700 font-medium"
+                className="mt-3 text-blue-600 hover:text-blue-700 font-medium text-sm"
               >
                 Clear all filters
               </button>
@@ -284,8 +284,8 @@ export default function ProductGrid() {
         </div>
       ) : (
         <div className={viewMode === 'grid'
-          ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-          : "space-y-4"
+          ? "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3"
+          : "space-y-3"
         }>
           {filteredProducts.map((product) => (
             <ProductCard
@@ -299,9 +299,9 @@ export default function ProductGrid() {
       {/* Loading overlay for refresh */}
       {refreshing && (
         <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50 transition-opacity duration-300">
-          <div className="bg-white p-6 rounded-xl shadow-xl flex items-center space-x-3">
-            <RefreshCw size={20} className="animate-spin text-blue-600" />
-            <span className="text-gray-700">Refreshing products...</span>
+          <div className="bg-white p-4 rounded-xl shadow-xl flex items-center space-x-2">
+            <RefreshCw size={18} className="animate-spin text-blue-600" />
+            <span className="text-gray-700 text-sm">Refreshing products...</span>
           </div>
         </div>
       )}

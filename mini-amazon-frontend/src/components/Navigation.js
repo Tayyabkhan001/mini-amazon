@@ -47,16 +47,16 @@ export default function Navigation() {
 
   return (
     <header className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white shadow-lg border-b border-gray-200' : 'bg-white border-b border-gray-200'}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
+        <div className="flex items-center justify-between h-14">
           {/* Logo and Mobile Menu Button */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3">
             <button
               onClick={toggleMobileMenu}
               className="md:hidden p-2 text-gray-700 hover:text-blue-600 rounded-lg hover:bg-gray-100 transition-all duration-200"
               aria-label="Toggle menu"
             >
-              {showMobileMenu ? <X size={24} /> : <Menu size={24} />}
+              {showMobileMenu ? <X size={22} /> : <Menu size={22} />}
             </button>
 
             <Link
@@ -64,17 +64,17 @@ export default function Navigation() {
               className="flex items-center space-x-2 group"
               onClick={() => setShowMobileMenu(false)}
             >
-              <div className="bg-blue-600 p-2 rounded-lg group-hover:shadow-md transition-shadow">
-                <span className="text-white text-xl">🛒</span>
+              <div className="bg-blue-600 p-1.5 rounded-lg group-hover:shadow-md transition-shadow">
+                <span className="text-white text-lg">🛒</span>
               </div>
-              <h1 className="text-2xl font-bold text-gray-900 hidden sm:block">
+              <h1 className="text-xl font-bold text-gray-900 hidden sm:block">
                 Mini Amazon
               </h1>
             </Link>
           </div>
 
           {/* Desktop Search Bar */}
-          <div className="hidden md:flex flex-1 max-w-2xl mx-8">
+          <div className="hidden md:flex flex-1 max-w-2xl mx-6">
             <SearchBar
               onSearch={handleSearch}
               placeholder="Search products..."
@@ -174,7 +174,7 @@ export default function Navigation() {
               title="Search"
               aria-label="Search"
             >
-              <Search size={24} />
+              <Search size={22} />
             </button>
 
             {isAuthenticated && (
@@ -184,7 +184,7 @@ export default function Navigation() {
                 title="Shopping Cart"
                 onClick={() => setShowMobileMenu(false)}
               >
-                <ShoppingCart size={24} />
+                <ShoppingCart size={22} />
                 {itemCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold animate-pulse">
                     {itemCount}
@@ -197,7 +197,7 @@ export default function Navigation() {
 
         {/* Mobile Search Bar */}
         {showMobileSearch && (
-          <div className="md:hidden pb-4 px-2 transition-all duration-300">
+          <div className="md:hidden pb-3 px-2 transition-all duration-300">
             <SearchBar
               onSearch={handleSearch}
               placeholder="Search products..."
@@ -207,18 +207,18 @@ export default function Navigation() {
 
         {/* Mobile Menu */}
         {showMobileMenu && (
-          <div className="md:hidden border-t border-gray-200 pt-4 pb-4 bg-white transition-all duration-300">
+          <div className="md:hidden border-t border-gray-200 pt-3 pb-3 bg-white transition-all duration-300">
             <div className="space-y-2 px-2">
               {isAuthenticated ? (
                 <>
                   {/* User Info */}
                   <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg border border-blue-100">
-                    <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-medium">
+                    <div className="w-9 h-9 bg-blue-500 rounded-full flex items-center justify-center text-white font-medium">
                       {user?.name?.charAt(0) || 'U'}
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">{user?.name}</p>
-                      <p className="text-sm text-gray-500">{user?.email}</p>
+                      <p className="font-medium text-gray-900 text-sm">{user?.name}</p>
+                      <p className="text-xs text-gray-500">{user?.email}</p>
                     </div>
                   </div>
 
@@ -227,10 +227,10 @@ export default function Navigation() {
                     {/* Profile Link */}
                     <Link
                       href="/profile"
-                      className="flex items-center space-x-3 p-3 text-gray-700 rounded-lg hover:bg-white transition-all duration-200 hover:shadow-sm"
+                      className="flex items-center space-x-3 p-3 text-gray-700 rounded-lg hover:bg-white transition-all duration-200 hover:shadow-sm text-sm"
                       onClick={() => setShowMobileMenu(false)}
                     >
-                      <UserCircle size={20} className="text-blue-600" />
+                      <UserCircle size={18} className="text-blue-600" />
                       <span>Profile</span>
                     </Link>
 
@@ -239,18 +239,18 @@ export default function Navigation() {
                       <>
                         <Link
                           href="/admin"
-                          className="flex items-center space-x-3 p-3 text-gray-700 rounded-lg hover:bg-white transition-all duration-200 hover:shadow-sm"
+                          className="flex items-center space-x-3 p-3 text-gray-700 rounded-lg hover:bg-white transition-all duration-200 hover:shadow-sm text-sm"
                           onClick={() => setShowMobileMenu(false)}
                         >
-                          <Settings size={20} className="text-blue-600" />
+                          <Settings size={18} className="text-blue-600" />
                           <span>Admin Dashboard</span>
                         </Link>
                         <Link
                           href="/admin/add-product"
-                          className="flex items-center space-x-3 p-3 text-gray-700 rounded-lg hover:bg-white transition-all duration-200 hover:shadow-sm"
+                          className="flex items-center space-x-3 p-3 text-gray-700 rounded-lg hover:bg-white transition-all duration-200 hover:shadow-sm text-sm"
                           onClick={() => setShowMobileMenu(false)}
                         >
-                          <Plus size={20} className="text-blue-600" />
+                          <Plus size={18} className="text-blue-600" />
                           <span>Add Product</span>
                         </Link>
                       </>
@@ -261,25 +261,25 @@ export default function Navigation() {
                         logout();
                         setShowMobileMenu(false);
                       }}
-                      className="flex items-center space-x-3 p-3 text-red-600 w-full rounded-lg hover:bg-white transition-all duration-200 hover:shadow-sm"
+                      className="flex items-center space-x-3 p-3 text-red-600 w-full rounded-lg hover:bg-white transition-all duration-200 hover:shadow-sm text-sm"
                     >
-                      <LogOut size={20} />
+                      <LogOut size={18} />
                       <span>Logout</span>
                     </button>
                   </div>
                 </>
               ) : (
-                <div className="grid grid-cols-2 gap-3 bg-gray-50 p-3 rounded-lg">
+                <div className="grid grid-cols-2 gap-2 bg-gray-50 p-2 rounded-lg">
                   <Link
                     href="/login"
-                    className="text-center text-blue-600 hover:text-blue-700 p-3 rounded-lg bg-white border border-blue-100 hover:border-blue-200 transition-all duration-200 hover:shadow-sm"
+                    className="text-center text-blue-600 hover:text-blue-700 p-2 rounded-lg bg-white border border-blue-100 hover:border-blue-200 transition-all duration-200 hover:shadow-sm text-sm"
                     onClick={() => setShowMobileMenu(false)}
                   >
                     Login
                   </Link>
                   <Link
                     href="/register"
-                    className="text-center bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md"
+                    className="text-center bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm hover:shadow-md text-sm"
                     onClick={() => setShowMobileMenu(false)}
                   >
                     Register
