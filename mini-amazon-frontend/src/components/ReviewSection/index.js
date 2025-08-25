@@ -12,41 +12,58 @@ export default function ReviewSection({ productId, reviews }) {
   };
 
   return (
-    <div className="mt-8">
-      <h3 className="text-xl font-semibold mb-4">Customer Reviews</h3>
+    <div className="mt-12">
+      <h3 className="text-2xl font-bold mb-6 text-gray-900">Customer Reviews</h3>
 
       {/* Add Review Form */}
-      <div className="bg-gray-50 p-4 rounded-lg mb-6">
-        <h4 className="font-medium mb-2">Write a Review</h4>
-        <StarRating
-          rating={userReview.rating}
-          onRate={(rating) => setUserReview({...userReview, rating})}
-          editable
-        />
+      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-8">
+        <h4 className="font-semibold mb-4 text-lg text-gray-800">Write a Review</h4>
+
+        <div className="mb-4">
+          <StarRating
+            rating={userReview.rating}
+            onRate={(rating) => setUserReview({...userReview, rating})}
+            editable
+          />
+        </div>
+
         <textarea
-          placeholder="Share your experience..."
+          placeholder="Share your experience with this product..."
           value={userReview.comment}
           onChange={(e) => setUserReview({...userReview, comment: e.target.value})}
-          className="w-full p-2 border rounded mt-2"
-          rows="3"
+          className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
+          rows="4"
         />
+
         <button
           onClick={submitReview}
-          className="bg-blue-500 text-white px-4 py-2 rounded mt-2 hover:bg-blue-600"
+          disabled={userReview.rating === 0 || userReview.comment.trim() === ''}
+          className="bg-blue-600 text-white px-6 py-3 rounded-lg mt-4 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 font-medium"
         >
           Submit Review
         </button>
       </div>
 
       {/* Reviews List */}
-      <div className="space-y-4">
-        {reviews.map((review) => (
-          <div key={review.id} className="border-b pb-4">
-            <StarRating rating={review.rating} />
-            <p className="text-gray-600 mt-1">{review.comment}</p>
-            <p className="text-sm text-gray-400">by {review.user} on {review.date}</p>
+      <div className="space-y-6">
+        {reviews.length > 0 ? (
+          reviews.map((review) => (
+            <div key={review.id} className="bg-white p-5 rounded-xl shadow-sm border border-gray-200">
+              <div className="flex items-center justify-between mb-3">
+                <StarRating rating={review.rating} />
+                <span className="text-sm text-gray-500">{review.date}</span>
+              </div>
+
+              <p className="text-gray-700 mb-2 leading-relaxed">{review.comment}</p>
+
+              <p className="text-sm text-gray-600 font-medium">by {review.user}</p>
+            </div>
+          ))
+        ) : (
+          <div className="text-center py-8 bg-gray-50 rounded-xl">
+            <p className="text-gray-500">No reviews yet. Be the first to review this product!</p>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
