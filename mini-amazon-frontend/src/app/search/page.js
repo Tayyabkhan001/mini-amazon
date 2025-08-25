@@ -1,12 +1,13 @@
 // app/search/page.js
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ProductCard from '@/components/ProductCard';
 import { productsAPI } from '@/lib/api';
 import { Filter, SlidersHorizontal } from 'lucide-react';
 
-export default function SearchPage() {
+// Create a component that uses useSearchParams
+function SearchContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q');
   const [products, setProducts] = useState([]);
@@ -174,5 +175,20 @@ export default function SearchPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Main page component with Suspense boundary
+export default function SearchPage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        </div>
+      </div>
+    }>
+      <SearchContent />
+    </Suspense>
   );
 }
