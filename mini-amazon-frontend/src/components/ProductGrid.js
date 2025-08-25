@@ -4,14 +4,21 @@
 import { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
 import { productsAPI } from '@/lib/api';
-import { RefreshCw, Filter, Grid, List } from 'lucide-react';
+import { RefreshCw, Filter, Grid, List, X } from 'lucide-react';
 
 export default function ProductGrid() {
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+  const [viewMode, setViewMode] = useState('grid');
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState({
+    category: '',
+    minPrice: 0,
+    maxPrice: 10000
+  });
 
   // Define fetchProducts function first
   const fetchProducts = async () => {
@@ -33,6 +40,7 @@ export default function ProductGrid() {
       }
 
       setProducts(productsData);
+      setFilteredProducts(productsData); // Initialize filtered products
     } catch (error) {
       console.error('Error fetching products:', error);
       setError('Failed to load products. Please try again.');
@@ -47,9 +55,41 @@ export default function ProductGrid() {
     fetchProducts();
   };
 
+  // Apply filters when they change
+  useEffect(() => {
+    let filtered = products;
+
+    // Apply category filter
+    if (filters.category) {
+      filtered = filtered.filter(product =>
+        product.category === filters.category
+      );
+    }
+
+    // Apply price filter
+    filtered = filtered.filter(product =>
+      product.price >= filters.minPrice &&
+      product.price <= filters.maxPrice
+    );
+
+    setFilteredProducts(filtered);
+  }, [filters, products]);
+
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  const applyFilters = (newFilters) => {
+    setFilters(newFilters);
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      category: '',
+      minPrice: 0,
+      maxPrice: 10000
+    });
+  };
 
   if (loading && !refreshing) {
     return (
@@ -87,7 +127,7 @@ export default function ProductGrid() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Our Products</h2>
-          <p className="text-gray-600 mt-1">{products.length} products available</p>
+          <p className="text-gray-600 mt-1">{filteredProducts.length} products available</p>
         </div>
 
         <div className="flex items-center space-x-3">
@@ -108,7 +148,10 @@ export default function ProductGrid() {
           </div>
 
           {/* Filter Button */}
-          <button className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-gray-50 transition-colors duration-200 shadow-sm">
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-gray-50 transition-colors duration-200 shadow-sm"
+          >
             <Filter size={16} />
             <span>Filter</span>
           </button>
@@ -125,14 +168,86 @@ export default function ProductGrid() {
         </div>
       </div>
 
-      {products.length === 0 ? (
+      {/* Filters Panel */}
+      {showFilters && (
+        <div className="bg-white p-6 rounded-xl shadow-md mb-6 border border-gray-200">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={clearFilters}
+                className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
+              >
+                Clear All
+              </button>
+              <button
+                onClick={() => setShowFilters(false)}
+                className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Category Filter */}
+            <div>
+              <label className="block text-sm font-medium mb-3 text-gray-700">Category</label>
+              <select
+                value={filters.category}
+                onChange={(e) => applyFilters({...filters, category: e.target.value})}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+              >
+                <option value="">All Categories</option>
+                {Array.from(new Set(products.map(p => p.category))).map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Price Range Filter */}
+            <div>
+              <label className="block text-sm font-medium mb-3 text-gray-700">
+                Price Range: ${filters.minPrice} - ${filters.maxPrice}
+              </label>
+
+              <div className="space-y-2">
+                <input
+                  type="range"
+                  min="0"
+                  max="10000"
+                  step="10"
+                  value={filters.maxPrice}
+                  onChange={(e) => applyFilters({...filters, maxPrice: parseInt(e.target.value)})}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-600"
+                />
+
+                <div className="flex justify-between text-sm text-gray-600">
+                  <span>${filters.minPrice}</span>
+                  <span>${filters.maxPrice}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {filteredProducts.length === 0 ? (
         <div className="text-center py-16 bg-gray-50 rounded-xl">
           <div className="max-w-md mx-auto">
             <div className="bg-gray-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl">📦</span>
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-            <p className="text-gray-600">Check back later for new products.</p>
+            <p className="text-gray-600">Try adjusting your filters or check back later for new products.</p>
+            {(filters.category || filters.maxPrice < 10000) && (
+              <button
+                onClick={clearFilters}
+                className="mt-4 text-blue-600 hover:text-blue-700 font-medium"
+              >
+                Clear all filters
+              </button>
+            )}
           </div>
         </div>
       ) : (
@@ -140,11 +255,10 @@ export default function ProductGrid() {
           ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
           : "space-y-4"
         }>
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <ProductCard
               key={product.productId}
               product={product}
-              viewMode={viewMode}
             />
           ))}
         </div>

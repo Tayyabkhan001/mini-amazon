@@ -16,30 +16,29 @@ export default function FilterSidebar({ categories, onFilter, isMobileOpen = fal
     onFilter({
       category: selectedCategory,
       minPrice: priceRange[0],
-      maxPrice: priceRange[1]
+      maxPrice: priceRange[1],
     });
-
     if (onClose) onClose();
   };
 
   const clearFilters = () => {
     setSelectedCategory('');
     setPriceRange([0, 1000]);
-    onFilter({
-      category: '',
-      minPrice: 0,
-      maxPrice: 1000
-    });
+    onFilter({ category: '', minPrice: 0, maxPrice: 1000 });
   };
 
   return (
-    <div className={`bg-white p-6 rounded-xl shadow-md h-fit sticky top-24 ${isMobileOpen ? 'fixed inset-0 z-50 overflow-y-auto' : ''}`}>
+    <div
+      className={`bg-white p-6 rounded-2xl shadow-lg transition-all duration-300
+        ${isMobileOpen ? 'fixed inset-0 z-50 overflow-y-auto' : 'sticky top-24 h-fit'}
+      `}
+    >
       {/* Mobile header */}
       {isMobileOpen && (
-        <div className="flex items-center justify-between mb-6 pb-4 border-b">
+        <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
           <h3 className="text-xl font-bold text-gray-900">Filters</h3>
-          <button onClick={onClose} className="p-1 hover:bg-gray-100 rounded-lg">
-            <X size={24} />
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg">
+            <X size={22} />
           </button>
         </div>
       )}
@@ -61,8 +60,10 @@ export default function FilterSidebar({ categories, onFilter, isMobileOpen = fal
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
         >
           <option value="">All Categories</option>
-          {categories.map(cat => (
-            <option key={cat} value={cat}>{cat}</option>
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
           ))}
         </select>
       </div>
@@ -73,18 +74,34 @@ export default function FilterSidebar({ categories, onFilter, isMobileOpen = fal
           Price Range: ${priceRange[0]} - ${priceRange[1]}
         </label>
 
-        <div className="space-y-2">
+        <div className="space-y-4">
+          {/* Min Price Slider */}
+          <input
+            type="range"
+            min="0"
+            max="1000"
+            step="10"
+            value={priceRange[0]}
+            onChange={(e) =>
+              setPriceRange([Math.min(parseInt(e.target.value), priceRange[1]), priceRange[1]])
+            }
+            className="w-full accent-blue-600"
+          />
+
+          {/* Max Price Slider */}
           <input
             type="range"
             min="0"
             max="1000"
             step="10"
             value={priceRange[1]}
-            onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-600"
+            onChange={(e) =>
+              setPriceRange([priceRange[0], Math.max(parseInt(e.target.value), priceRange[0])])
+            }
+            className="w-full accent-blue-600"
           />
 
-          <div className="flex justify-between text-xs text-gray-500">
+          <div className="flex justify-between text-sm text-gray-600 font-medium">
             <span>${priceRange[0]}</span>
             <span>${priceRange[1]}</span>
           </div>
@@ -95,7 +112,7 @@ export default function FilterSidebar({ categories, onFilter, isMobileOpen = fal
       <div className="space-y-3">
         <button
           onClick={applyFilters}
-          className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium"
+          className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium shadow-md"
         >
           Apply Filters
         </button>

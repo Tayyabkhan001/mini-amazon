@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ProductCard from '@/components/ProductCard';
 import { productsAPI } from '@/lib/api';
-import { Filter, SlidersHorizontal } from 'lucide-react';
+import { Filter, SlidersHorizontal, X } from 'lucide-react';
 
 // Create a component that uses useSearchParams
 function SearchContent() {
@@ -77,7 +77,14 @@ function SearchContent() {
     );
 
     setFilteredProducts(filtered);
-    setShowFilters(false);
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      category: '',
+      minPrice: 0,
+      maxPrice: 1000
+    });
   };
 
   if (loading) {
@@ -92,22 +99,49 @@ function SearchContent() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-col md:flex-row gap-8">
+      {/* Search Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          {query ? `Search Results for "${query}"` : 'All Products'}
+        </h1>
+        <p className="text-gray-600 text-lg">
+          {filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'} found
+          {query && ` for "${query}"`}
+        </p>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-8">
         {/* Mobile Filter Button */}
-        <button
-          onClick={() => setShowFilters(!showFilters)}
-          className="md:hidden flex items-center justify-center gap-2 bg-blue-600 text-white py-2 px-4 rounded-lg mb-4"
-        >
-          <SlidersHorizontal size={20} />
-          <span>{showFilters ? 'Hide Filters' : 'Show Filters'}</span>
-        </button>
+        <div className="lg:hidden flex items-center gap-4 mb-4">
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center justify-center gap-2 bg-blue-600 text-white py-2 px-4 rounded-lg"
+          >
+            <SlidersHorizontal size={20} />
+            <span>{showFilters ? 'Hide Filters' : 'Show Filters'}</span>
+          </button>
+
+          {(filters.category || filters.maxPrice < 1000) && (
+            <button
+              onClick={clearFilters}
+              className="text-blue-600 hover:text-blue-700 font-medium"
+            >
+              Clear Filters
+            </button>
+          )}
+        </div>
 
         {/* Filters Sidebar */}
-        {(showFilters || typeof window === 'undefined' || window.innerWidth >= 768) && (
-          <div className="w-full md:w-64 bg-white p-6 rounded-xl shadow-md h-fit sticky top-24">
-            <div className="flex items-center mb-6">
-              <Filter size={20} className="text-blue-600 mr-2" />
+        <div className={`lg:block ${showFilters ? 'block' : 'hidden'}`}>
+          <div className="w-full lg:w-64 bg-white p-6 rounded-xl shadow-md h-fit sticky top-24 border border-gray-200">
+            <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
+              <button
+                onClick={() => setShowFilters(false)}
+                className="lg:hidden p-1 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X size={20} />
+              </button>
             </div>
 
             {/* Category Filter */}
@@ -116,7 +150,7 @@ function SearchContent() {
               <select
                 value={filters.category}
                 onChange={(e) => applyFilters({...filters, category: e.target.value})}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white text-gray-900"
               >
                 <option value="">All Categories</option>
                 {Array.from(new Set(products.map(p => p.category))).map(cat => (
@@ -142,24 +176,24 @@ function SearchContent() {
                   className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-600"
                 />
 
-                <div className="flex justify-between text-xs text-gray-500">
+                <div className="flex justify-between text-sm text-gray-600">
                   <span>${filters.minPrice}</span>
                   <span>${filters.maxPrice}</span>
                 </div>
               </div>
             </div>
+
+            <button
+              onClick={clearFilters}
+              className="w-full text-center text-blue-600 hover:text-blue-700 font-medium py-2 border border-blue-200 rounded-lg hover:border-blue-300 transition-colors"
+            >
+              Clear All Filters
+            </button>
           </div>
-        )}
+        </div>
 
         {/* Products Grid */}
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-gray-900 mb-6">
-            {query ? `Search Results for "${query}"` : 'All Products'}
-            <span className="text-gray-500 text-lg font-normal ml-2">
-              ({filteredProducts.length} products found)
-            </span>
-          </h1>
-
           {filteredProducts.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredProducts.map((product) => (
@@ -167,9 +201,27 @@ function SearchContent() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 bg-gray-50 rounded-xl">
-              <p className="text-gray-500 text-lg">No products found matching your search.</p>
-              <p className="text-gray-400 mt-2">Try adjusting your filters or search terms.</p>
+            <div className="text-center py-16 bg-gray-50 rounded-xl">
+              <div className="max-w-md mx-auto">
+                <div className="bg-gray-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">🔍</span>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
+                <p className="text-gray-600 mb-4">
+                  {query
+                    ? `No results found for "${query}". Try different keywords or filters.`
+                    : 'No products match your current filters.'
+                  }
+                </p>
+                {(filters.category || filters.maxPrice < 1000) && (
+                  <button
+                    onClick={clearFilters}
+                    className="text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    Clear all filters
+                  </button>
+                )}
+              </div>
             </div>
           )}
         </div>
