@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
 import { productsAPI } from '@/lib/api';
-import { RefreshCw, Filter, Grid, List, X } from 'lucide-react';
+import { RefreshCw, Filter, Grid, List, X, SlidersHorizontal } from 'lucide-react';
 
 export default function ProductGrid() {
   const [products, setProducts] = useState([]);
@@ -17,7 +17,8 @@ export default function ProductGrid() {
   const [filters, setFilters] = useState({
     category: '',
     minPrice: 0,
-    maxPrice: 10000
+    maxPrice: 1000,
+    sortBy: 'name'
   });
 
   // Define fetchProducts function first
@@ -57,7 +58,7 @@ export default function ProductGrid() {
 
   // Apply filters when they change
   useEffect(() => {
-    let filtered = products;
+    let filtered = [...products];
 
     // Apply category filter
     if (filters.category) {
@@ -71,6 +72,21 @@ export default function ProductGrid() {
       product.price >= filters.minPrice &&
       product.price <= filters.maxPrice
     );
+
+    // Apply sorting
+    switch (filters.sortBy) {
+      case 'price-low':
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case 'price-high':
+        filtered.sort((a, b) => b.price - a.price);
+        break;
+      case 'name':
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      default:
+        break;
+    }
 
     setFilteredProducts(filtered);
   }, [filters, products]);
@@ -87,7 +103,8 @@ export default function ProductGrid() {
     setFilters({
       category: '',
       minPrice: 0,
-      maxPrice: 10000
+      maxPrice: 1000,
+      sortBy: 'name'
     });
   };
 
@@ -104,14 +121,14 @@ export default function ProductGrid() {
 
   if (error) {
     return (
-      <div className="text-center py-12 bg-gray-50 rounded-xl">
+      <div className="text-center py-12 bg-gray-50 rounded-xl border border-gray-200">
         <div className="max-w-md mx-auto">
-          <div className="bg-red-100 text-red-600 p-4 rounded-lg mb-4">
+          <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-4 border border-red-100">
             <p className="font-medium">{error}</p>
           </div>
           <button
             onClick={handleRefresh}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center mx-auto space-x-2 shadow-sm hover:shadow-md"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors duration-200 flex items-center justify-center mx-auto space-x-2 shadow-sm hover:shadow-md"
           >
             <RefreshCw size={18} className={refreshing ? 'animate-spin' : ''} />
             <span>{refreshing ? 'Refreshing...' : 'Try Again'}</span>
@@ -126,8 +143,10 @@ export default function ProductGrid() {
       {/* Header with Controls */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Our Products</h2>
-          <p className="text-gray-600 mt-1">{filteredProducts.length} products available</p>
+          <h2 className="text-3xl font-bold text-gray-900">
+            Our Products
+          </h2>
+          <p className="text-gray-600 mt-2">{filteredProducts.length} products available</p>
         </div>
 
         <div className="flex items-center space-x-3">
@@ -135,24 +154,37 @@ export default function ProductGrid() {
           <div className="flex bg-gray-100 rounded-lg p-1">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+              className={`p-2 rounded-md transition-all duration-200 ${viewMode === 'grid' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+              title="Grid View"
             >
               <Grid size={18} />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2 rounded-md transition-colors ${viewMode === 'list' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+              className={`p-2 rounded-md transition-all duration-200 ${viewMode === 'list' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+              title="List View"
             >
               <List size={18} />
             </button>
           </div>
 
+          {/* Sort Dropdown */}
+          <select
+            value={filters.sortBy}
+            onChange={(e) => applyFilters({...filters, sortBy: e.target.value})}
+            className="bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+          >
+            <option value="name">Sort by Name</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+          </select>
+
           {/* Filter Button */}
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-gray-50 transition-colors duration-200 shadow-sm"
+            className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-gray-50 transition-all duration-200 shadow-sm"
           >
-            <Filter size={16} />
+            <SlidersHorizontal size={16} />
             <span>Filter</span>
           </button>
 
@@ -160,7 +192,7 @@ export default function ProductGrid() {
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 hover:bg-blue-700 transition-colors duration-200 disabled:opacity-70 shadow-sm hover:shadow-md"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 disabled:opacity-70 shadow-sm hover:shadow-md"
           >
             <RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} />
             <span>Refresh</span>
@@ -170,13 +202,13 @@ export default function ProductGrid() {
 
       {/* Filters Panel */}
       {showFilters && (
-        <div className="bg-white p-6 rounded-xl shadow-md mb-6 border border-gray-200">
+        <div className="bg-white p-6 rounded-xl shadow-md mb-6 border border-gray-200 transition-all duration-300">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
             <div className="flex items-center space-x-3">
               <button
                 onClick={clearFilters}
-                className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
+                className="text-sm text-blue-600 hover:text-blue-700 transition-colors font-medium"
               >
                 Clear All
               </button>
@@ -215,7 +247,7 @@ export default function ProductGrid() {
                 <input
                   type="range"
                   min="0"
-                  max="10000"
+                  max="1000"
                   step="10"
                   value={filters.maxPrice}
                   onChange={(e) => applyFilters({...filters, maxPrice: parseInt(e.target.value)})}
@@ -233,14 +265,14 @@ export default function ProductGrid() {
       )}
 
       {filteredProducts.length === 0 ? (
-        <div className="text-center py-16 bg-gray-50 rounded-xl">
+        <div className="text-center py-16 bg-gray-50 rounded-xl border border-gray-200">
           <div className="max-w-md mx-auto">
             <div className="bg-gray-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl">📦</span>
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
             <p className="text-gray-600">Try adjusting your filters or check back later for new products.</p>
-            {(filters.category || filters.maxPrice < 10000) && (
+            {(filters.category || filters.maxPrice < 1000) && (
               <button
                 onClick={clearFilters}
                 className="mt-4 text-blue-600 hover:text-blue-700 font-medium"
@@ -266,7 +298,7 @@ export default function ProductGrid() {
 
       {/* Loading overlay for refresh */}
       {refreshing && (
-        <div className="fixed inset-0 bg-black bg-opacity-10 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50 transition-opacity duration-300">
           <div className="bg-white p-6 rounded-xl shadow-xl flex items-center space-x-3">
             <RefreshCw size={20} className="animate-spin text-blue-600" />
             <span className="text-gray-700">Refreshing products...</span>

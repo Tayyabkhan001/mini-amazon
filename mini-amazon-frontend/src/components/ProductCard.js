@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
-import { ShoppingCart, Loader2, ImageOff, Heart, Star } from 'lucide-react';
+import { ShoppingCart, Loader2, ImageOff, Heart, Star, Eye } from 'lucide-react';
 
 export default function ProductCard({ product }) {
   const { isAuthenticated } = useAuth();
@@ -12,6 +12,7 @@ export default function ProductCard({ product }) {
   const [imageError, setImageError] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
@@ -24,24 +25,37 @@ export default function ProductCard({ product }) {
 
     try {
       await addToCart(product);
-      alert('Product added to cart successfully! 🛒');
+      // Show success feedback
+      setLoading(false);
     } catch (error) {
       console.error('Error adding to cart:', error);
       setError('Failed to add to cart. Please try again.');
       setTimeout(() => setError(null), 3000);
-    } finally {
       setLoading(false);
     }
   };
 
-  const toggleWishlist = () => {
+  const toggleWishlist = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     setIsWishlisted(!isWishlisted);
   };
 
+  const quickView = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Implement quick view functionality
+    console.log('Quick view:', product.name);
+  };
+
   return (
-    <div className="product-card group fade-in">
+    <div
+      className="group bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300 flex flex-col h-full hover:-translate-y-1"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       {/* Image Section */}
-      <div className="product-card-image">
+      <div className="relative h-60 bg-gray-100 flex items-center justify-center overflow-hidden">
         {product.imageUrl && !imageError ? (
           <>
             {!imageLoaded && (
@@ -52,7 +66,7 @@ export default function ProductCard({ product }) {
             <img
               src={product.imageUrl}
               alt={product.name}
-              className={`h-full w-full object-contain transition-all duration-500 group-hover:scale-105 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              className={`h-full w-full object-cover transition-all duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'} ${isHovered ? 'scale-105' : 'scale-100'}`}
               onLoad={() => setImageLoaded(true)}
               onError={(e) => {
                 setImageError(true);
@@ -70,34 +84,51 @@ export default function ProductCard({ product }) {
           </div>
         )}
 
-        {/* Wishlist Button */}
-        <button
-          onClick={toggleWishlist}
-          className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-red-50 transition-colors duration-200"
-        >
-          <Heart
-            size={18}
-            className={isWishlisted ? 'text-red-500 fill-current' : 'text-gray-400'}
-          />
-        </button>
+        {/* Overlay Actions */}
+        <div className={`absolute inset-0 bg-black/40 flex items-center justify-center space-x-2 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+          <button
+            onClick={quickView}
+            className="bg-white/90 text-gray-800 p-2 rounded-full hover:bg-white transition-all duration-200"
+            title="Quick View"
+          >
+            <Eye size={16} />
+          </button>
+          <button
+            onClick={toggleWishlist}
+            className="bg-white/90 text-gray-800 p-2 rounded-full hover:bg-white transition-all duration-200"
+            title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+          >
+            <Heart
+              size={16}
+              className={isWishlisted ? 'text-red-500 fill-current' : ''}
+            />
+          </button>
+        </div>
 
         {/* Category Badge */}
         {product.category && product.category !== 'uncategorized' && (
-          <span className="badge-primary absolute top-3 left-3 capitalize">
+          <span className="absolute top-3 left-3 bg-white/95 text-gray-800 text-xs px-2.5 py-1 rounded-full font-medium capitalize shadow-sm">
             {product.category}
+          </span>
+        )}
+
+        {/* Sale Badge */}
+        {product.originalPrice && product.originalPrice > product.price && (
+          <span className="absolute top-3 right-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+            Sale
           </span>
         )}
       </div>
 
-      <div className="p-5 flex flex-col flex-grow">
+      <div className="p-4 flex flex-col flex-grow">
         {/* Product Name */}
-        <h3 className="font-semibold text-lg mb-2 text-gray-900 line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors">
+        <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 leading-tight group-hover:text-blue-600 transition-colors duration-200">
           {product.name}
         </h3>
 
         {/* Product Description */}
         {product.description && (
-          <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-grow leading-relaxed">
+          <p className="text-gray-600 text-sm mb-3 line-clamp-2 flex-grow leading-relaxed">
             {product.description}
           </p>
         )}
@@ -110,7 +141,7 @@ export default function ProductCard({ product }) {
                 <Star
                   key={star}
                   size={14}
-                  className={`${star <= Math.round(product.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
+                  className={`${star <= Math.round(product.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'} mr-0.5`}
                 />
               ))}
             </div>
@@ -120,15 +151,15 @@ export default function ProductCard({ product }) {
 
         {/* Error Message */}
         {error && (
-          <div className="text-red-500 text-sm mb-3 font-medium bg-red-50 p-2 rounded-lg">
+          <div className="text-red-500 text-xs mb-2 font-medium bg-red-50 p-2 rounded-lg">
             {error}
           </div>
         )}
 
         {/* Price and Add to Cart */}
-        <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-100">
+        <div className="flex items-center justify-between mt-auto pt-3">
           <div className="flex flex-col">
-            <span className="text-2xl font-bold text-green-700">
+            <span className="text-xl font-bold text-green-700">
               ${typeof product.price === 'number' ? product.price.toFixed(2) : parseFloat(product.price).toFixed(2)}
             </span>
             {product.originalPrice && product.originalPrice > product.price && (
@@ -141,14 +172,14 @@ export default function ProductCard({ product }) {
           <button
             onClick={handleAddToCart}
             disabled={loading}
-            className="btn-primary flex items-center space-x-2 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-3 py-2 rounded-lg flex items-center space-x-1.5 transition-all duration-200 disabled:cursor-not-allowed font-medium shadow-sm hover:shadow-md"
           >
             {loading ? (
-              <Loader2 size={18} className="animate-spin" />
+              <Loader2 size={16} className="animate-spin" />
             ) : (
-              <ShoppingCart size={18} />
+              <ShoppingCart size={16} />
             )}
-            <span>{loading ? 'Adding...' : 'Add'}</span>
+            <span className="font-medium">{loading ? 'Adding...' : 'Add'}</span>
           </button>
         </div>
       </div>
