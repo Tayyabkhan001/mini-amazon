@@ -60,12 +60,15 @@ The serverless approach was chosen for its numerous advantages in modern cloud a
 - **Reduced Operational Overhead**: No server patching, monitoring, or maintenance
 - **Rapid Development**: Focus on business logic rather than infrastructure
 
-### Frontend: Next.js 15 + Turbopack
+### Frontend(UI): Next.js 15 + Turbopack
 
 **Selection Rationale**:
 - **Performance**: Turbopack provides fastest frontend tooling available
 - **SEO Optimization**: Server-side rendering capabilities for better search visibility
 - **Production Ready**: Built-in optimization, compression, and caching
+
+  ![Mini Amazon UI](docs/architecture/images/UI.png)
+*Mini Amazon user interface showcase*
 
 ### Backend: AWS Serverless Stack
 
@@ -108,6 +111,9 @@ graph TD
 | OrdersTable | userId (String) | orderId (String) | GSI1: orderId-index (PK=orderId)<br>GSI2: status-date-index (PK=orderStatus, SK=createdAt) | Stores all order transactions. The PK is userId to efficiently fetch all orders for a user.<br>• create_order.py (PutItem)<br>• get_orders.py (Query by userId)<br>• get_order_detail.py (Query GSI1 by orderId for specific order details)<br>• process_payment.py (UpdateItem on order status) |
 | CartTable | userId (String) | productId (String) | - | Stores items in a user's shopping cart. This design allows one item per row, making updates easy.<br>• add_to_cart.py (PutItem/UpdateItem)<br>• get_cart.py (Query by userId)<br>• update_cart_item.py (UpdateItem for quantity)<br>• remove_from_cart.py (DeleteItem) |
 
+![AWS Lambda Metrics Dashboard](docs/architecture/images/Dashboard-Lambda-Account_lvl_metrics.png)
+*CloudWatch dashboard showing Lambda function performance, invocations, and error metrics*
+
 **Related Lambda Functions**:
 - `generate_presigned_url.py` - Generates secure upload URLs for images
 - `presigned_url.py` - Handles presigned URL operations for S3 access
@@ -121,6 +127,8 @@ graph TD
 - Automatic scaling based on workload
 - Serverless architecture compatibility
 - Built-in security and backup features
+  ![DynamoDB Metrics Dashboard](docs/architecture/images/dYNAMODB.png)
+*Amazon DynamoDB Tables*
 
 ### 3. Amazon S3 Bucket
 
@@ -163,6 +171,9 @@ graph TD
 - Rate-based blocking for DDoS prevention
 - IP reputation lists integration
 
+![Mini Amazon Architecture Diagram](docs/architecture/images/combined-image.png)
+
+
 ### 7. Amazon CloudWatch
 
 **Purpose**: Monitoring and observability
@@ -173,7 +184,6 @@ graph TD
 - Custom dashboards for real-time performance monitoring
 - Alerting and notification systems for operational issues
 - Log aggregation and analysis
-
 
 ## 🛡️ Security Architecture
 
