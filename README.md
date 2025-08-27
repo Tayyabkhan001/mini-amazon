@@ -9,8 +9,12 @@ A production-grade, serverless e-commerce platform built with modern cloud techn
 
 **Live Demo**: [https://mini-amazon-qynf.vercel.app](https://mini-amazon-qynf.vercel.app)
 
+## 🏗️ Architecture Design
+
+### Backend: AWS Serverless Stack
 ![Mini Amazon Architecture Diagram](https://via.placeholder.com/800x400/2c3e50/ffffff?text=Mini+Amazon+Architecture+Diagram)
-*Architecture Overview - Interactive diagram available in `/docs/architecture.md`*
+
+[**View the complete backend architecture diagram and explanation →**](docs/architecture/architecture_diagrams.md)
 
 ## 📋 Table of Contents
 
