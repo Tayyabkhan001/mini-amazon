@@ -379,7 +379,7 @@ Full documentation available in `/docs` directory:
 
 - Follow AWS Well-Architected Framework principles
 - Write comprehensive tests for all new features
-- Maintain documentation updates alongside code changes
+- Maintain documentation updates alongside code changes.
 - Use conventional commits format for commit messages
 
 ## 🙏 Acknowledgments
