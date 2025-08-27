@@ -14,7 +14,10 @@ A production-grade, serverless e-commerce platform built with modern cloud techn
 ### Backend: AWS Serverless Stack
 ![Mini Amazon Architecture Diagram](docs/architecture/images/mini_amazon_architecture.png)
 
+
+
 [**View the complete backend architecture diagram and explanation →**](docs/architecture/architecture_diagrams.md)
+
 
 ## 📋 Table of Contents
 
