@@ -128,7 +128,6 @@ graph TD
 - Lifecycle policies for cost optimization (move to Glacier after 90 days)
 - CloudFront integration for global CDN distribution
 - CORS configuration for cross-origin access
-- 
 
 ### 4. API Gateway
 
